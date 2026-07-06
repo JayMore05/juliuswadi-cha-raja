@@ -1,30 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getGallery } from "@/lib/services/gallery";
-import { GalleryImage } from "@/types/gallery";
+import {
+  getGallery,
+  GalleryItem,
+} from "@/lib/services/gallery";
 
 export function useGallery() {
-  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [images, setImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadGallery() {
+  async function refresh() {
     setLoading(true);
 
-    const data = await getGallery();
-
-    setImages(data);
-
-    setLoading(false);
+    try {
+      const data = await getGallery();
+      setImages(data);
+    } catch (error) {
+      console.error("Gallery Error:", error);
+      setImages([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
-    loadGallery();
+    refresh();
   }, []);
 
   return {
     images,
     loading,
-    refresh: loadGallery,
+    refresh,
   };
 }

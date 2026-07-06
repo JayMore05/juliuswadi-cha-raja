@@ -1,6 +1,32 @@
-import { supabase } from "@/lib/supabase/client";
-import { v4 as uuid } from "uuid";
+import { uploadImage } from "@/lib/services/upload";
+import { BUCKETS } from "@/lib/constants/buckets";
 
+export interface UpdateItem {
+  id: string;
+  created_at: string;
+  title: string;
+  description: string;
+  image_url: string | null;
+}
+
+/**
+ * GET ALL UPDATES
+ */
+export async function getUpdates(): Promise<UpdateItem[]> {
+  const res = await fetch("/api/updates", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to load updates.");
+  }
+
+  return await res.json();
+}
+
+/**
+ * ADD UPDATE
+ */
 export async function addUpdate(
   title: string,
   description: string,
@@ -8,68 +34,59 @@ export async function addUpdate(
 ) {
   let imageUrl: string | null = null;
 
-  // Upload image (optional)
   if (file) {
-    const ext = file.name.split(".").pop();
-    const filename = `${uuid()}.${ext}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("updates")
-      .upload(filename, file);
-
-    if (uploadError) {
-      console.error(uploadError);
-      throw new Error(uploadError.message);
-    }
-
-    imageUrl = supabase.storage
-      .from("updates")
-      .getPublicUrl(filename)
-      .data.publicUrl;
+    imageUrl = await uploadImage(
+      file,
+      BUCKETS.UPDATES
+    );
   }
 
-  // Save into database
-  const { data, error } = await supabase
-    .from("updates")
-    .insert([
-      {
-        title,
-        description,
-        image_url: imageUrl,
-      },
-    ])
-    .select();
+  const res = await fetch("/api/updates", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      image_url: imageUrl,
+    }),
+  });
 
-  if (error) {
-    console.error(error);
-    throw new Error(error.message);
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      json.error || "Failed to publish update."
+    );
   }
 
-  return data;
+  return json;
 }
 
-export async function getUpdates() {
-  const { data, error } = await supabase
-    .from("updates")
-    .select("*")
-    .order("created_at", { ascending: false });
+/**
+ * DELETE UPDATE
+ */
+export async function deleteUpdate(
+  id: string
+) {
+  const res = await fetch("/api/updates", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
 
-  if (error) {
-    console.error(error);
-    return [];
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      json.error || "Failed to delete update."
+    );
   }
 
-  return data;
-}
-
-export async function deleteUpdate(id: string) {
-  const { error } = await supabase
-    .from("updates")
-    .delete()
-    .eq("id", id);
-
-  if (error) {
-    console.error(error);
-    throw new Error(error.message);
-  }
+  return json;
 }

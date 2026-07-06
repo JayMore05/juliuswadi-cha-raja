@@ -1,15 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 import { addUpdate } from "@/lib/services/updates";
 
-export default function UpdateForm() {
+interface UpdateFormProps {
+  onSuccess: () => Promise<void>;
+}
+
+export default function UpdateForm({
+  onSuccess,
+}: UpdateFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState<File | undefined>(undefined);
+  const [file, setFile] = useState<File>();
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -25,25 +36,34 @@ export default function UpdateForm() {
     try {
       setLoading(true);
 
-      await addUpdate(title, description, file);
+      await addUpdate(
+        title,
+        description,
+        file
+      );
 
       setTitle("");
       setDescription("");
       setFile(undefined);
 
-      // Clear file input
-      const fileInput = document.getElementById(
+      const input = document.getElementById(
         "update-image"
-      ) as HTMLInputElement;
+      ) as HTMLInputElement | null;
 
-      if (fileInput) {
-        fileInput.value = "";
+      if (input) {
+        input.value = "";
       }
 
-      alert("✅ Update Published Successfully!");
+      await onSuccess();
 
-      // Reload page so the new card appears immediately
-      window.location.reload();
+      document
+        .getElementById("updates-grid")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+
+      alert("✅ Update Published Successfully!");
     } catch (error) {
       console.error(error);
       alert("❌ Failed to publish update.");
@@ -55,41 +75,44 @@ export default function UpdateForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border bg-white p-8 shadow space-y-6"
+      className="space-y-6 rounded-2xl border bg-white p-8 shadow"
     >
       <h2 className="text-3xl font-bold">
         Publish New Update
       </h2>
 
-      <input
-        type="text"
+      <Input
         placeholder="Title"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full rounded-xl border p-3 outline-none focus:ring-2 focus:ring-orange-500"
+        onChange={(e) =>
+          setTitle(e.target.value)
+        }
       />
 
-      <textarea
+      <Textarea
+        rows={6}
         placeholder="Description"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="h-40 w-full rounded-xl border p-3 outline-none focus:ring-2 focus:ring-orange-500"
+        onChange={(e) =>
+          setDescription(e.target.value)
+        }
       />
 
       <input
         id="update-image"
         type="file"
         accept="image/*"
-        onChange={(e) => setFile(e.target.files?.[0])}
+        onChange={(e) =>
+          setFile(e.target.files?.[0])
+        }
       />
 
-      <button
+      <Button
         type="submit"
-        disabled={loading}
-        className="rounded-xl bg-orange-600 px-8 py-3 font-semibold text-white transition hover:bg-orange-700 disabled:opacity-50"
+        loading={loading}
       >
-        {loading ? "Publishing..." : "Publish Update"}
-      </button>
+        Publish Update
+      </Button>
     </form>
   );
 }

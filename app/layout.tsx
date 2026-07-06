@@ -1,23 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const noto = Noto_Sans_Devanagari({
-  subsets: ["devanagari"],
-  variable: "--font-devanagari",
-  weight: ["400", "500", "600", "700"],
-});
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Juliuswadi Cha Raja",
-  description: "Official Website of Juliuswadi Cha Raja",
+  description: "Official Website",
 };
 
 export default function RootLayout({
@@ -27,9 +15,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${noto.variable}`}>
+      <body>
         {children}
-	<Toaster position="top-right" />
+
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          duration={2500}
+        />
       </body>
     </html>
   );

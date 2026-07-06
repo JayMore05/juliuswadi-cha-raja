@@ -4,7 +4,11 @@ import GalleryCard from "./GalleryCard";
 import { useGallery } from "@/hooks/useGallery";
 
 export default function GalleryGrid() {
-  const { images, loading } = useGallery();
+  const {
+    images,
+    loading,
+    refresh,
+  } = useGallery();
 
   if (loading) {
     return (
@@ -28,6 +32,7 @@ export default function GalleryGrid() {
         <GalleryCard
           key={image.id}
           image={image}
+          refresh={refresh}
         />
       ))}
     </div>

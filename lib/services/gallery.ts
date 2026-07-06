@@ -1,60 +1,76 @@
-import { supabase } from "@/lib/supabase/client";
-import { v4 as uuid } from "uuid";
+import { uploadImage } from "@/lib/services/upload";
+import { BUCKETS } from "@/lib/constants/buckets";
 
-export async function uploadGallery(file: File, title: string) {
-  const ext = file.name.split(".").pop();
-  const filename = `${uuid()}.${ext}`;
-
-  // Upload to Storage
-  const { error: uploadError } = await supabase.storage
-    .from("gallery")
-    .upload(filename, file);
-
-  if (uploadError) {
-    console.error("Storage Upload Error:", uploadError);
-    throw uploadError;
-  }
-
-  // Get Public URL
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from("gallery").getPublicUrl(filename);
-
-  // Insert into Database
-  const { data, error: dbError } = await supabase
-    .from("gallery")
-    .insert([
-      {
-        title,
-        image_url: publicUrl,
-        category: "General",
-      },
-    ])
-    .select();
-
-  console.log("Database Response:", data);
-
-  if (dbError) {
-    console.error("Database Error:", dbError);
-    throw dbError;
-  }
-
-  return publicUrl;
+export interface GalleryItem {
+  id: string;
+  created_at: string;
+  title: string;
+  image_url: string;
 }
 
-export async function getGallery() {
-  const { data, error } = await supabase
-    .from("gallery")
-    .select("*");
+export async function getGallery(): Promise<GalleryItem[]> {
+  const res = await fetch("/api/gallery", {
+    cache: "no-store",
+  });
 
-  if (error) {
-    console.error(error);
-    return [];
+  if (!res.ok) {
+    throw new Error("Failed to load gallery.");
   }
 
-  return data;
+  return await res.json();
 }
 
-export async function deleteGallery(id: string) {
-  await supabase.from("gallery").delete().eq("id", id);
+export async function uploadGallery(
+  file: File,
+  title: string
+) {
+  const imageUrl = await uploadImage(
+    file,
+    BUCKETS.GALLERY
+  );
+
+  const res = await fetch("/api/gallery", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title,
+      image_url: imageUrl,
+    }),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      json.error || "Failed to upload image."
+    );
+  }
+
+  return imageUrl;
+}
+
+export async function deleteGallery(
+  id: string
+) {
+  const res = await fetch("/api/gallery", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      json.error || "Failed to delete image."
+    );
+  }
+
+  return json;
 }

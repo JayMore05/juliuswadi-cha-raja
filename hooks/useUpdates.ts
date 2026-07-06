@@ -8,23 +8,35 @@ export function useUpdates() {
   const [updates, setUpdates] = useState<UpdateItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function load() {
+  async function refresh() {
+    console.log("🔄 Refresh Started");
+
     setLoading(true);
 
-    const data = await getUpdates();
+    try {
+      const data = await getUpdates();
 
-    setUpdates(data);
+      console.log("📦 Updates received:", data);
 
-    setLoading(false);
+      setUpdates(data);
+
+      console.log("✅ Updates State Updated");
+    } catch (error) {
+      console.error("❌ Refresh Error:", error);
+    } finally {
+      setLoading(false);
+
+      console.log("🏁 Refresh Finished");
+    }
   }
 
   useEffect(() => {
-    load();
+    refresh();
   }, []);
 
   return {
     updates,
     loading,
-    refresh: load,
+    refresh,
   };
 }
