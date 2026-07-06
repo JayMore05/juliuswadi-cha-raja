@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${noto.variable}`}>
         {children}
+	<Toaster position="top-right" />
       </body>
     </html>
   );
