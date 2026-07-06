@@ -11,29 +11,24 @@ export default function HeroImage({
   settings,
 }: HeroImageProps) {
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center mt-10 lg:mt-0">
 
-      {/* Giant Orange Glow */}
+      {/* Background Glow */}
 
-      <div className="absolute h-[850px] w-[850px] rounded-full bg-orange-300/20 blur-[170px]" />
+      <div className="absolute h-[320px] w-[320px] rounded-full bg-orange-300/20 blur-[80px] sm:h-[450px] sm:w-[450px] lg:h-[850px] lg:w-[850px] lg:blur-[170px]" />
 
-      {/* Golden Glow */}
+      <div className="absolute h-[260px] w-[260px] rounded-full bg-yellow-300/20 blur-[60px] sm:h-[360px] sm:w-[360px] lg:h-[650px] lg:w-[650px] lg:blur-[130px]" />
 
-      <div className="absolute h-[650px] w-[650px] rounded-full bg-yellow-300/25 blur-[130px]" />
+      {/* Rings */}
 
-      {/* Decorative Ring */}
+      <div className="absolute hidden lg:block h-[700px] w-[700px] rounded-full border border-orange-200/40" />
 
-      <div className="absolute h-[700px] w-[700px] rounded-full border border-orange-200/40" />
+      <div className="absolute hidden lg:block h-[560px] w-[560px] rounded-full border border-orange-100/60" />
 
-      <div className="absolute h-[560px] w-[560px] rounded-full border border-orange-100/60" />
-
-      {/* Main Image */}
+      {/* Image */}
 
       <Image
-        src={
-          settings?.hero_image ||
-          "/images/ganpati.png"
-        }
+        src={settings?.hero_image || "/images/ganpati.png"}
         alt="Ganpati Bappa"
         width={900}
         height={1100}
@@ -42,41 +37,23 @@ export default function HeroImage({
           relative
           z-20
           h-auto
-          w-[380px]
-          drop-shadow-[0_40px_80px_rgba(0,0,0,0.25)]
-          transition-all
-          duration-700
+          w-[260px]
+          sm:w-[320px]
+          md:w-[450px]
+          lg:w-[650px]
+          object-contain
+          drop-shadow-[0_30px_60px_rgba(0,0,0,0.25)]
+          transition-transform
+          duration-500
           hover:scale-105
-          md:w-[520px]
-          lg:w-[700px]
         "
       />
 
-      {/* Blessing Card */}
+      {/* Decorative Dots */}
 
-      <div className="absolute left-0 top-24 z-30 rounded-3xl bg-white/90 px-6 py-4 shadow-2xl backdrop-blur">
+      <div className="absolute left-5 bottom-10 h-3 w-3 rounded-full bg-orange-500 lg:h-5 lg:w-5" />
 
-        <p className="text-xl font-bold text-orange-600">
-         
-        </p>
-
-      </div>
-
-      {/* Morya Card */}
-
-      <div className="absolute bottom-16 right-0 z-30 rounded-3xl bg-white/90 px-6 py-4 shadow-2xl backdrop-blur">
-
-        <p className="text-xl font-bold text-orange-600">
-          
-        </p>
-
-      </div>
-
-      {/* Decorative Dot */}
-
-      <div className="absolute left-8 bottom-20 h-5 w-5 rounded-full bg-orange-400 shadow-lg" />
-
-      <div className="absolute right-12 top-20 h-6 w-6 rounded-full bg-yellow-400 shadow-lg" />
+      <div className="absolute right-6 top-6 h-4 w-4 rounded-full bg-yellow-400 lg:h-6 lg:w-6" />
 
     </div>
   );
