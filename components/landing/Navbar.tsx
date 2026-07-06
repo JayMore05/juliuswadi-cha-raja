@@ -2,154 +2,66 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { usePublicSettings } from "@/hooks/usePublicSettings";
 import PremiumButton from "@/components/ui/PremiumButton";
-import { Settings } from "@/lib/services/settings";
 
-interface NavbarProps {
-  settings: Settings | null;
-}
-
-export default function Navbar({
-  settings,
-}: NavbarProps) {
-  const [open, setOpen] = useState(false);
-
-  const menu = [
-    {
-      title: "Home",
-      href: "/",
-    },
-    {
-      title: "Gallery",
-      href: "/gallery",
-    },
-    {
-      title: "Updates",
-      href: "/updates",
-    },
-    {
-      title: "Donation",
-      href: "/donation",
-    },
-    {
-      title: "Contact",
-      href: "/contact",
-    },
-  ];
+export default function Navbar() {
+  const { settings } = usePublicSettings();
 
   return (
-    <>
-      <header className="fixed inset-x-0 top-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 py-6">
+      <div className="flex w-full max-w-7xl items-center justify-between rounded-full bg-white/95 px-6 py-4 shadow-2xl backdrop-blur-xl">
 
-        <div className="mx-auto mt-5 flex max-w-7xl items-center justify-between rounded-full border border-orange-200/60 bg-white/80 px-5 py-3 shadow-2xl backdrop-blur-xl lg:px-8">
+        {/* Logo */}
 
-          {/* Logo */}
+        <Link href="/" className="flex items-center gap-4">
 
-          <Link
-            href="/"
-            className="flex items-center gap-4"
-          >
-            <Image
-              src={
-                settings?.logo ||
-                "/logo/logo.png"
-              }
-              alt="Logo"
-              width={75}
-              height={75}
-              priority
-              className="h-14 w-14 rounded-full border-2 border-orange-500 object-cover lg:h-16 lg:w-16"
-            />
+          <Image
+            src={settings?.logo || "/logo/logo.png"}
+            alt="Logo"
+            width={70}
+            height={70}
+            className="rounded-full"
+            priority
+          />
 
-            <div className="hidden md:block">
+          <div>
 
-              <h1 className="text-2xl font-bold text-orange-600">
-                {settings?.mandal_name ??
-                  "Juliuswadi Cha Raja"}
-              </h1>
+            <h1 className="text-2xl font-bold text-orange-600">
+              {settings?.mandal_name || "Juliuswadi Cha Raja"}
+            </h1>
 
-              <p className="text-sm text-gray-600">
-                {settings?.marathi_name ??
-                  "जुलेशवाडीचा राजा"}
-              </p>
+            <p className="text-lg text-gray-600">
+              {settings?.hero_marathi_title || "जुलेशवाडीचा राजा"}
+            </p>
 
-            </div>
-          </Link>
-
-          {/* Desktop */}
-
-          <nav className="hidden items-center gap-10 text-[17px] font-semibold lg:flex">
-
-            {menu.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="transition hover:text-orange-600"
-              >
-                {item.title}
-              </Link>
-            ))}
-
-          </nav>
-
-          <div className="hidden lg:block">
-            <PremiumButton href="/donation">
-              Donate Now
-            </PremiumButton>
           </div>
 
-          {/* Mobile */}
+        </Link>
 
-          <button
-            onClick={() =>
-              setOpen(!open)
-            }
-            className="rounded-lg p-2 lg:hidden"
-          >
-            {open ? (
-              <X size={30} />
-            ) : (
-              <Menu size={30} />
-            )}
-          </button>
+        {/* Menu */}
 
-        </div>
+        <nav className="hidden gap-10 text-lg font-semibold lg:flex">
 
-      </header>
+          <Link href="/">Home</Link>
 
-      {/* Mobile Menu */}
+          <Link href="/gallery">Gallery</Link>
 
-      {open && (
-        <div className="fixed left-4 right-4 top-24 z-40 rounded-3xl bg-white p-6 shadow-2xl lg:hidden">
+          <Link href="/updates">Updates</Link>
 
-          <nav className="space-y-5">
+          <Link href="/donation">Donation</Link>
 
-            {menu.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                onClick={() =>
-                  setOpen(false)
-                }
-                className="block text-lg font-semibold"
-              >
-                {item.title}
-              </Link>
-            ))}
+          <Link href="/contact">Contact</Link>
 
-            <PremiumButton
-              href="/donation"
-              className="w-full"
-            >
-              Donate Now
-            </PremiumButton>
+        </nav>
 
-          </nav>
+        {/* Donate */}
 
-        </div>
-      )}
-    </>
+        <PremiumButton href="/donation">
+          Donate Now
+        </PremiumButton>
+
+      </div>
+    </header>
   );
 }
