@@ -1,24 +1,18 @@
-import Navbar from "@/components/layout/Navbar";
-import Hero from "@/components/home/Hero";
-import QuickActions from "@/components/home/QuickActions";
-import DonationCard from "@/components/donation/DonationCard";
-import Footer from "@/components/layout/Footer";
-import UpdatesSection from "@/components/home/UpdatesSection";
-import GalleryPreview from "@/components/home/GalleryPreview";
+import Navbar from "@/components/landing/Navbar";
+import Hero from "@/components/landing/Hero";
+import GallerySection from "@/components/landing/GallerySection";
+import UpdatesSection from "@/components/landing/UpdatesSection";
+import DonationSection from "@/components/landing/DonationSection";
+import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#FFF8F2]">
+    <main className="min-h-screen overflow-x-hidden bg-[#FFF8F2]">
       <Navbar />
-
       <Hero />
-
-      <QuickActions />
-
-      <DonationCard />
-      <GalleryPreview />
+      <GallerySection />
       <UpdatesSection />
-
+      <DonationSection />
       <Footer />
     </main>
   );
