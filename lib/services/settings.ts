@@ -29,6 +29,7 @@ export interface Settings {
   // Social
   instagram: string;
   youtube: string;
+  twitter: string;
   maps: string;
 
   // Branding

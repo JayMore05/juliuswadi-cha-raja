@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   getMembers,
 } from "@/lib/services/committee";
-import { CommitteeMember } from "@/types/committee";
+import { CommitteeMember } from "@/lib/types/committee";
 
 export function useCommittee() {
   const [members, setMembers] = useState<

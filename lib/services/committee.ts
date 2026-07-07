@@ -1,6 +1,6 @@
 import { uploadImage } from "@/lib/services/upload";
 import { BUCKETS } from "@/lib/constants/buckets";
-import { CommitteeMember } from "@/types/committee";
+import { CommitteeMember } from "@/lib/types/committee";
 
 export async function getMembers(): Promise<
   CommitteeMember[]

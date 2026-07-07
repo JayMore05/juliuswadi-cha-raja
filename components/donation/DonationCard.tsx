@@ -1,148 +1,197 @@
 "use client";
 
 import Image from "next/image";
-import { siteConfig } from "@/lib/site";
-import { Copy, QrCode, Smartphone } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  QrCode,
+  Smartphone,
+  Heart,
+} from "lucide-react";
+
+import { usePublicSettings } from "@/hooks/usePublicSettings";
 
 export default function DonationCard() {
-  const copyUPI = async () => {
-    await navigator.clipboard.writeText(siteConfig.upi);
-    alert("✅ UPI ID copied successfully!");
-  };
+  const { settings, loading } = usePublicSettings();
 
-  const openUPI = () => {
-    window.location.href = `upi://pay?pa=${siteConfig.upi}&pn=${encodeURIComponent(
-      siteConfig.name
-    )}`;
-  };
+  if (loading) {
+    return (
+      <section className="bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 text-center">
+          <p className="text-slate-500 text-lg">
+            Loading donation details...
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section
-      id="donation"
-      className="py-24 bg-gradient-to-b from-[#FFF8F2] to-white"
-    >
-      <div className="mx-auto max-w-6xl px-6">
+    <section className="bg-white py-16 lg:py-24">
 
-        <div className="mb-12 text-center">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
 
-          <span className="rounded-full bg-orange-100 px-4 py-2 text-orange-700 font-semibold">
-            🙏 Support Ganpati Bappa
-          </span>
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="
+            grid
+            gap-10
 
-          <h2 className="mt-6 text-5xl font-bold text-orange-600">
-            Donate to Juliuswadi Cha Raja
-          </h2>
+            rounded-[36px]
 
-          <p className="mt-4 text-gray-600">
-            Every contribution helps us celebrate Ganesh Utsav with devotion,
-            unity and tradition.
-          </p>
+            border
+            border-orange-100
 
-        </div>
+            bg-gradient-to-br
+            from-white
+            to-orange-50
 
-        <div className="grid gap-10 lg:grid-cols-2">
+            p-8
 
-          {/* QR Card */}
+            shadow-2xl
 
-          <div className="rounded-3xl bg-white p-8 shadow-2xl">
+            lg:grid-cols-2
+            lg:p-12
+          "
+        >
 
-            <div className="flex items-center gap-3">
+          {/* Left */}
 
-              <QrCode className="text-orange-600" />
+          <div>
 
-              <h3 className="text-2xl font-bold">
-                Scan & Donate
-              </h3>
+            <span className="rounded-full bg-orange-100 px-4 py-2 text-sm font-semibold text-orange-600">
+              Support the Festival
+            </span>
+
+            <h2 className="mt-6 text-3xl font-bold text-[#5E120F] sm:text-4xl">
+              Donate Securely
+            </h2>
+
+            <p className="mt-6 leading-8 text-slate-600">
+              Your generous contribution helps us organize
+              Ganesh Festival, social activities and community
+              service initiatives every year.
+            </p>
+
+            <div className="mt-10 space-y-6">
+
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
+
+                  <Smartphone
+                    size={22}
+                    className="text-orange-600"
+                  />
+
+                </div>
+
+                <div>
+
+                  <p className="text-sm text-slate-500">
+                    UPI ID
+                  </p>
+
+                  <p className="font-semibold text-[#5E120F] break-all">
+                    {settings?.upi || "Not Available"}
+                  </p>
+
+                </div>
+
+              </div>
+
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
+
+                  <Heart
+                    size={22}
+                    className="text-orange-600"
+                  />
+
+                </div>
+
+                <div>
+
+                  <p className="text-sm text-slate-500">
+                    Google Pay
+                  </p>
+
+                  <p className="font-semibold text-[#5E120F] break-all">
+                    {settings?.gpay || "Not Available"}
+                  </p>
+
+                </div>
+
+              </div>
 
             </div>
 
-            <div className="mt-8 flex justify-center">
+          </div>
+
+          {/* QR */}
+
+          <div className="flex flex-col items-center justify-center">
+
+            {settings?.qr_image ? (
 
               <Image
-                src="/qr/upi-qr.png"
-                alt="UPI QR"
+                src={settings.qr_image}
+                alt="Donation QR Code"
                 width={320}
                 height={320}
-                className="rounded-2xl border"
+                className="
+                  rounded-3xl
+                  border-4
+                  border-orange-200
+                  bg-white
+                  p-3
+                  shadow-xl
+                "
               />
 
-            </div>
+            ) : (
 
-            <p className="mt-6 text-center text-gray-600">
-              Scan with any UPI App
+              <div
+                className="
+                  flex
+                  h-80
+                  w-80
+                  flex-col
+                  items-center
+                  justify-center
+                  rounded-3xl
+                  border-2
+                  border-dashed
+                  border-orange-200
+                  bg-orange-50
+                "
+              >
+
+                <QrCode
+                  size={60}
+                  className="text-orange-400"
+                />
+
+                <p className="mt-5 text-slate-500">
+                  QR Code Not Uploaded
+                </p>
+
+              </div>
+
+            )}
+
+            <p className="mt-6 text-center text-slate-500">
+              Scan using any UPI application
             </p>
 
           </div>
 
-          {/* Details Card */}
-
-          <div className="rounded-3xl bg-white p-8 shadow-2xl">
-
-            <h3 className="text-2xl font-bold text-orange-600">
-              Donation Details
-            </h3>
-
-            <div className="mt-8 space-y-6">
-
-              <div>
-
-                <p className="text-gray-500">
-                  UPI ID
-                </p>
-
-                <h4 className="text-xl font-semibold">
-                  {siteConfig.upi}
-                </h4>
-
-              </div>
-
-              <button
-                onClick={copyUPI}
-                className="flex w-full items-center justify-center gap-3 rounded-xl bg-orange-600 px-6 py-4 text-white font-semibold transition hover:bg-orange-700"
-              >
-                <Copy size={20} />
-
-                Copy UPI ID
-              </button>
-
-              <button
-                onClick={openUPI}
-                className="flex w-full items-center justify-center gap-3 rounded-xl border border-orange-300 px-6 py-4 font-semibold text-orange-600 transition hover:bg-orange-50"
-              >
-                <Smartphone size={20} />
-
-                Open UPI App
-              </button>
-
-              <div>
-
-                <p className="text-gray-500">
-                  Google Pay Number
-                </p>
-
-                <h4 className="text-xl font-bold">
-                  {siteConfig.phone}
-                </h4>
-
-              </div>
-
-              <div className="rounded-2xl bg-orange-50 p-5">
-
-                <p className="text-center text-orange-700 font-medium">
-                  ❤️ Thank you for supporting
-                  <br />
-                  Juliuswadi Cha Raja
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
+        </motion.div>
 
       </div>
+
     </section>
   );
 }

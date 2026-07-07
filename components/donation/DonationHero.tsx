@@ -1,0 +1,68 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Heart } from "lucide-react";
+
+export default function DonationHero() {
+  return (
+    <section
+      className="
+        relative
+        overflow-hidden
+        bg-gradient-to-br
+        from-[#FFF8F2]
+        via-[#FFF4EA]
+        to-[#FFE8D1]
+        pt-40
+        pb-24
+      "
+    >
+      <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-orange-300/20 blur-3xl" />
+
+      <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-yellow-300/20 blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-6">
+
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: .8 }}
+          className="mx-auto max-w-4xl text-center"
+        >
+
+          <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-5 py-2 text-orange-700">
+
+            <Heart size={18} />
+
+            Support Our Mandal
+
+          </div>
+
+          <h1
+            className="
+              mt-8
+              font-heading
+              text-4xl
+              font-bold
+              text-[#5E120F]
+              sm:text-5xl
+              lg:text-7xl
+            "
+          >
+            Your Donation
+            <span className="block text-orange-600">
+              Makes a Difference
+            </span>
+          </h1>
+
+          <p className="mx-auto mt-8 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+            Every contribution helps us organize Ganesh Festival,
+            cultural programs and community service activities.
+          </p>
+
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}

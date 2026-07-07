@@ -1,10 +1,24 @@
-import ComingSoon from "@/components/common/ComingSoon";
+import Navbar from "@/components/layout/Navbar/Navbar";
+import Footer from "@/components/landing/Footer";
+
+import DonationHero from "@/components/donation/DonationHero";
+import DonationCard from "@/components/donation/DonationCard";
+import DonationCTA from "@/components/donation/DonationCTA";
 
 export default function DonationPage() {
   return (
-    <ComingSoon
-      title="Donation"
-      description="Support Juliuswadi Cha Raja."
-    />
+    <main className="min-h-screen overflow-x-hidden bg-[#FFF8F2]">
+
+      <Navbar />
+
+      <DonationHero />
+
+      <DonationCard />
+
+      <DonationCTA />
+
+      <Footer />
+
+    </main>
   );
 }

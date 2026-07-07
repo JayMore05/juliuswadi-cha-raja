@@ -1,7 +1,10 @@
-import Navbar from "@/components/landing/Navbar";
+import Navbar from "@/components/layout/Navbar/Navbar";
 import Hero from "@/components/landing/Hero";
-import GallerySection from "@/components/landing/GallerySection";
-import UpdatesSection from "@/components/landing/UpdatesSection";
+
+import AboutSection from "@/components/landing/AboutSection";
+import UpdatesPreview from "@/components/landing/UpdatesPreview";
+import GalleryPreview from "@/components/landing/GalleryPreview";
+import Committee from "@/components/landing/Committee";
 import DonationSection from "@/components/landing/DonationSection";
 import Footer from "@/components/landing/Footer";
 
@@ -9,10 +12,21 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#FFF8F2]">
       <Navbar />
+
       <Hero />
-      <GallerySection />
-      <UpdatesSection />
+
+      
+
+      <AboutSection />
+
+      <UpdatesPreview />
+
+      <GalleryPreview />
+
+      <Committee />
+
       <DonationSection />
+
       <Footer />
     </main>
   );

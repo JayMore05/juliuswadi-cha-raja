@@ -1,15 +1,28 @@
 @import "tailwindcss";
 
+/* =====================================================
+   Root Theme
+===================================================== */
+
 :root {
   --background: #fff8f2;
   --foreground: #1f2937;
 
-  --primary: #f97316;
-  --secondary: #d4af37;
+  --primary: #ea580c;
+  --secondary: #f6c453;
 
   --card: #ffffff;
-
   --border: #f1e4cf;
+}
+
+/* =====================================================
+   Base
+===================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html {
@@ -17,23 +30,89 @@ html {
 }
 
 body {
-  background: linear-gradient(
-    to bottom,
-    #fff7ed,
-    #fff8f2,
-    #ffffff
-  );
+  background:
+    radial-gradient(
+      circle at top,
+      #fff7ed,
+      #fff8f2 45%,
+      #ffffff 100%
+    );
 
   color: var(--foreground);
 
-  font-family: var(--font-poppins), sans-serif;
+  overflow-x: hidden;
 }
 
-* {
-  box-sizing: border-box;
+/* =====================================================
+   Fonts
+===================================================== */
+
+.font-body {
+  font-family: var(--font-inter), sans-serif;
 }
+
+.font-heading {
+  font-family: var(--font-cormorant), serif;
+}
+
+.font-marathi {
+  font-family: var(--font-devanagari), serif;
+}
+
+/* =====================================================
+   Selection
+===================================================== */
 
 ::selection {
-  background: #f97316;
+  background: #ea580c;
   color: white;
+}
+
+/* =====================================================
+   Scrollbar
+===================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff8f2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f59e0b;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ea580c;
+}
+
+/* =====================================================
+   Utility Classes
+===================================================== */
+
+.text-gradient {
+  background: linear-gradient(
+    180deg,
+    #7c2d12,
+    #ea580c,
+    #f6c453
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+}
+
+.section-padding {
+  padding-top: 7rem;
+  padding-bottom: 7rem;
 }

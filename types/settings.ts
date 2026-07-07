@@ -32,14 +32,18 @@ export interface Settings {
 
   qr_image: string | null;
 
-  /* Social */
+  
 
-  instagram: string;
+/* Social */
 
-  youtube: string;
+instagram: string;
 
-  maps: string;
+youtube: string;
 
+twitter: string;
+
+maps: string;
+ 
   /* Branding */
 
   logo: string | null;
