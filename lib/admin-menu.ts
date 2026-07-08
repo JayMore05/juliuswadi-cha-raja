@@ -2,7 +2,7 @@ import {
   LayoutDashboard,
   Images,
   Bell,
-  HandCoins,
+  BookOpen,
   Users,
   Settings,
 } from "lucide-react";
@@ -19,14 +19,14 @@ export const adminMenu = [
     icon: Images,
   },
   {
+    title: "Aarti Sangrah",
+    href: "/admin/aarti",
+    icon: BookOpen,
+  },
+  {
     title: "Updates",
     href: "/admin/updates",
     icon: Bell,
-  },
-  {
-    title: "Donations",
-    href: "/admin/donation",
-    icon: HandCoins,
   },
   {
     title: "Committee",

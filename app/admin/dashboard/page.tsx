@@ -2,73 +2,123 @@
 
 import Link from "next/link";
 
+const cards = [
+  {
+    title: "Settings",
+    icon: "⚙️",
+    href: "/admin/settings",
+    description: "Manage mandal information and public settings.",
+    color: "from-blue-500 to-cyan-500",
+  },
+  {
+    title: "Gallery",
+    icon: "🖼",
+    href: "/admin/gallery",
+    description: "Upload and organize festival gallery images.",
+    color: "from-violet-500 to-fuchsia-500",
+  },
+  {
+    title: "Updates",
+    icon: "📢",
+    href: "/admin/updates",
+    description: "Publish announcements and festival updates.",
+    color: "from-orange-500 to-amber-500",
+  },
+  {
+    title: "Committee",
+    icon: "👥",
+    href: "/admin/committee",
+    description: "Manage committee members and their details.",
+    color: "from-emerald-500 to-green-500",
+  },
+  {
+    title: "Aarti Sangrah",
+    icon: "🪔",
+    href: "/admin/aarti",
+    description: "Manage Aarti pages, Stotra and devotional content.",
+    color: "from-red-500 to-orange-500",
+  },
+];
+
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
 
-      <div className="rounded-2xl border bg-white p-8 shadow">
-        <h1 className="text-3xl font-bold">
+      {/* Header */}
+
+      <div className="rounded-3xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 p-8 text-white shadow-xl">
+
+        <p className="text-sm uppercase tracking-[5px] text-orange-100">
+          Juliuswadi Cha Raja
+        </p>
+
+        <h1 className="mt-2 text-4xl font-bold">
           Admin Dashboard
         </h1>
 
-        <p className="mt-2 text-gray-500">
-          Welcome to Juliuswadi Cha Raja Admin Panel.
+        <p className="mt-4 max-w-2xl text-orange-100">
+          Manage your Ganpati Mandal website from one place.
+          Update gallery, committee members, Aarti Sangrah,
+          announcements and other public information.
         </p>
+
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      {/* Dashboard Cards */}
 
-        <Link
-          href="/admin/settings"
-          className="rounded-2xl border bg-white p-6 shadow transition hover:shadow-lg"
-        >
-          <h2 className="text-xl font-semibold">
-            ⚙️ Settings
-          </h2>
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
 
-          <p className="mt-2 text-gray-500">
-            Manage mandal information.
-          </p>
-        </Link>
+        {cards.map((card) => (
 
-        <Link
-          href="/admin/gallery"
-          className="rounded-2xl border bg-white p-6 shadow transition hover:shadow-lg"
-        >
-          <h2 className="text-xl font-semibold">
-            🖼 Gallery
-          </h2>
+          <Link
+            key={card.title}
+            href={card.href}
+            className="
+              group
+              overflow-hidden
+              rounded-3xl
+              border
+              border-orange-100
+              bg-white
+              shadow-md
+              transition-all
+              duration-300
+              hover:-translate-y-2
+              hover:shadow-2xl
+            "
+          >
 
-          <p className="mt-2 text-gray-500">
-            Upload and manage gallery images.
-          </p>
-        </Link>
+            <div
+              className={`bg-gradient-to-r ${card.color} p-6`}
+            >
 
-        <Link
-          href="/admin/updates"
-          className="rounded-2xl border bg-white p-6 shadow transition hover:shadow-lg"
-        >
-          <h2 className="text-xl font-semibold">
-            📢 Updates
-          </h2>
+              <div className="text-5xl">
+                {card.icon}
+              </div>
 
-          <p className="mt-2 text-gray-500">
-            Publish festival updates.
-          </p>
-        </Link>
+            </div>
 
-        <Link
-          href="/admin/committee"
-          className="rounded-2xl border bg-white p-6 shadow transition hover:shadow-lg"
-        >
-          <h2 className="text-xl font-semibold">
-            👥 Committee
-          </h2>
+            <div className="p-6">
 
-          <p className="mt-2 text-gray-500">
-            Manage committee members.
-          </p>
-        </Link>
+              <h2 className="text-2xl font-bold text-slate-800 group-hover:text-orange-600">
+                {card.title}
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                {card.description}
+              </p>
+
+              <div className="mt-6 flex items-center text-sm font-semibold text-orange-600">
+
+                Manage →
+
+              </div>
+
+            </div>
+
+          </Link>
+
+        ))}
 
       </div>
 

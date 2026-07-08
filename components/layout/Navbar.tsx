@@ -10,6 +10,17 @@ export default function Navbar() {
   const { settings } = usePublicSettings();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    { href: "/gallery", label: "Gallery" },
+    { href: "/aarti", label: "🪔 Aarti" },
+    { href: "/updates", label: "Updates" },
+    { href: "/committee", label: "Committee" },
+    { href: "/donation", label: "Donation" },
+    { href: "/contact", label: "Contact" },
+  ];
+
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-orange-100 bg-white/95 backdrop-blur-lg shadow-md">
@@ -31,7 +42,6 @@ export default function Navbar() {
             />
 
             <div className="hidden md:block">
-
               <h1 className="text-2xl font-bold text-orange-600">
                 {settings?.mandal_name ||
                   "Juliuswadi Cha Raja"}
@@ -41,53 +51,24 @@ export default function Navbar() {
                 {settings?.marathi_name ||
                   "जुलेशवाडीचा राजा"}
               </p>
-
             </div>
-
           </Link>
 
-          {/* Desktop Menu */}
+          {/* Desktop Navigation */}
 
-          <nav className="hidden items-center gap-8 text-lg font-semibold lg:flex">
-
-            <Link
-              href="/"
-              className="transition hover:text-orange-600"
-            >
-              Home
-            </Link>
-
-            <Link
-              href="/gallery"
-              className="transition hover:text-orange-600"
-            >
-              Gallery
-            </Link>
-
-            <Link
-              href="/updates"
-              className="transition hover:text-orange-600"
-            >
-              Updates
-            </Link>
-
-            <Link
-              href="/donation"
-              className="transition hover:text-orange-600"
-            >
-              Donation
-            </Link>
-
-            <Link
-              href="/contact"
-              className="transition hover:text-orange-600"
-            >
-              Contact
-            </Link>
-
+          <nav className="hidden items-center gap-7 text-[17px] font-semibold lg:flex">
+            {navLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="transition duration-300 hover:text-orange-600"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Desktop Donate */}
+          {/* Donate Button */}
 
           <Link
             href="/donation"
@@ -96,7 +77,7 @@ export default function Navbar() {
             Donate
           </Link>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu Button */}
 
           <button
             onClick={() =>
@@ -121,55 +102,18 @@ export default function Navbar() {
 
           <nav className="flex flex-col">
 
-            <Link
-              href="/"
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className="border-b px-6 py-4"
-            >
-              Home
-            </Link>
-
-            <Link
-              href="/gallery"
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className="border-b px-6 py-4"
-            >
-              Gallery
-            </Link>
-
-            <Link
-              href="/updates"
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className="border-b px-6 py-4"
-            >
-              Updates
-            </Link>
-
-            <Link
-              href="/donation"
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className="border-b px-6 py-4"
-            >
-              Donation
-            </Link>
-
-            <Link
-              href="/contact"
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className="border-b px-6 py-4"
-            >
-              Contact
-            </Link>
+            {navLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() =>
+                  setMobileOpen(false)
+                }
+                className="border-b px-6 py-4 transition hover:bg-orange-50"
+              >
+                {item.label}
+              </Link>
+            ))}
 
             <Link
               href="/donation"
@@ -186,5 +130,5 @@ export default function Navbar() {
         </div>
       )}
     </>
-);
+  );
 }

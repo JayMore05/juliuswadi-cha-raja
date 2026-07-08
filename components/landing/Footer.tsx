@@ -33,17 +33,40 @@ export default function Footer() {
 
       <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-yellow-500/10 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-20">
-        <div className="grid gap-14 md:grid-cols-2 lg:grid-cols-4">
+      {/* 1. Main container replaced */}
+      <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-6 sm:py-16 lg:px-6 lg:py-20">
+        {/* 2. Grid replaced */}
+        <div
+          className="
+            grid
+            gap-12
+            text-center
+            sm:gap-14
+            md:grid-cols-2
+            md:text-left
+            lg:grid-cols-4
+          "
+        >
           {/* Logo */}
 
-          <div>
+          {/* 3. Logo section wrapper replaced */}
+          <div className="flex flex-col items-center md:items-start">
+            {/* 4. Logo Image className replaced */}
             <Image
               src={settings?.logo || "/logo/logo.png"}
               alt="Logo"
               width={90}
               height={90}
-              className="rounded-full border-4 border-orange-300 shadow-lg"
+              className="
+                rounded-full
+                border-4
+                border-orange-300
+                shadow-lg
+                h-20
+                w-20
+                sm:h-24
+                sm:w-24
+              "
             />
 
             <h3 className="mt-6 font-heading text-3xl font-bold">
@@ -63,7 +86,16 @@ export default function Footer() {
               Quick Links
             </h4>
 
-            <div className="flex flex-col gap-4">
+            {/* 5. Quick Links container replaced */}
+            <div
+              className="
+                flex
+                flex-col
+                gap-4
+                items-center
+                md:items-start
+              "
+            >
               <Link
                 href="/"
                 className="transition duration-300 hover:translate-x-1 hover:text-orange-300"
@@ -122,7 +154,16 @@ export default function Footer() {
               Contact Us
             </h4>
 
-            <div className="space-y-5">
+            {/* 6. Contact Section container replaced */}
+            <div
+              className="
+                space-y-5
+                flex
+                flex-col
+                items-center
+                md:items-start
+              "
+            >
               <div className="flex items-start gap-3">
                 <MapPin
                   size={20}
@@ -172,7 +213,15 @@ export default function Footer() {
               live darshan and announcements.
             </p>
 
-            <div className="flex gap-4">
+            {/* 7. Social Icons container replaced */}
+            <div
+              className="
+                flex
+                justify-center
+                gap-4
+                md:justify-start
+              "
+            >
               {/* Instagram */}
 
               <Link
@@ -260,7 +309,20 @@ export default function Footer() {
         {/* Bottom */}
 
         <div className="mt-16 border-t border-white/10 pt-8">
-          <p className="flex flex-wrap items-center justify-center gap-2 text-center text-orange-100">
+          {/* 8. Bottom Copyright paragraph replaced */}
+          <p
+            className="
+              flex
+              flex-wrap
+              items-center
+              justify-center
+              gap-2
+              text-center
+              text-sm
+              sm:text-base
+              text-orange-100
+            "
+          >
             © {new Date().getFullYear()} Juliuswadi Cha Raja.
             All Rights Reserved.
 
