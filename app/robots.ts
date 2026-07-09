@@ -6,6 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://juliuswadicharaja.vercel.app/sitemap.xml",
+    sitemap:
+      "https://juliuswadi-cha-raja.vercel.app/sitemap.xml",
   };
 }
