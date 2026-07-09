@@ -28,7 +28,9 @@ const devanagari = Noto_Serif_Devanagari({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://juliuswadicharaja.vercel.app"),
+  metadataBase: new URL(
+    "https://juliuswadi-cha-raja.vercel.app"
+  ),
 
   title: {
     default: "Juliuswadi Cha Raja",
@@ -42,35 +44,40 @@ export const metadata: Metadata = {
     "Juliuswadi Cha Raja",
     "Ganpati Mandal",
     "Ganesh Festival",
-    "Ganpati",
     "Ganesh Chaturthi",
+    "Ganpati",
+    "Ganesh Utsav",
     "Marathi Aarti",
     "Ganpati Aarti",
     "Kolhapur Ganpati",
     "Maharashtra Ganesh Mandal",
-    "Ganesh Utsav",
+    "Ganesh Festival Kolhapur",
   ],
 
   authors: [
     {
-      name: "Juliuswadi Cha Raja",
+      name: "Jay More",
     },
   ],
 
   creator: "Jay More",
 
-  publisher: "Jay More",
+  publisher: "Juliuswadi Cha Raja",
 
   applicationName: "Juliuswadi Cha Raja",
 
   category: "Religious Organization",
+
+  verification: {
+    google: "lKJODJXKNamC5Wng4WMfNmiRtHTewnPZjTc8vfooqqQ",
+  },
 
   openGraph: {
     title: "Juliuswadi Cha Raja",
     description:
       "Official website of Juliuswadi Cha Raja Ganpati Mandal.",
 
-    url: "https://juliuswadicharaja.vercel.app",
+    url: "https://juliuswadi-cha-raja.vercel.app",
 
     siteName: "Juliuswadi Cha Raja",
 
@@ -102,11 +109,18 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/logo/logo.png",
+    shortcut: "/logo/logo.png",
     apple: "/logo/logo.png",
   },
 };
