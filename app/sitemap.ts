@@ -7,36 +7,58 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: baseUrl,
-      priority: 1,
+      lastModified: new Date(),
       changeFrequency: "weekly",
+      priority: 1,
     },
+
     {
       url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.8,
     },
+
     {
       url: `${baseUrl}/gallery`,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/updates`,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/committee`,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/aarti`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
       priority: 0.9,
     },
+
     {
-      url: `${baseUrl}/donation`,
+      url: `${baseUrl}/updates`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+
+    {
+      url: `${baseUrl}/committee`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.8,
     },
+
+    {
+      url: `${baseUrl}/aarti`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+
+    {
+      url: `${baseUrl}/donation`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+
     {
       url: `${baseUrl}/contact`,
-      priority: 0.8,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.6,
     },
   ];
 }
