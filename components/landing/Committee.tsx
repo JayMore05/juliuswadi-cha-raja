@@ -147,4 +147,4 @@ export default function Committee() {
       </div>
     </section>
   );
-}
+} 
