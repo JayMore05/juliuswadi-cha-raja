@@ -1,54 +1,84 @@
 "use client";
 
 import Link from "next/link";
+import {
+  PlusCircle,
+  IndianRupee,
+  FileText,
+  Download,
+  RefreshCw,
+  Image,
+} from "lucide-react";
 
 const actions = [
   {
-    title: "Add Gallery",
+    title: "New Donation",
+    icon: PlusCircle,
+    href: "/admin/donations",
+    color: "bg-orange-500",
+  },
+  {
+    title: "Receive Balance",
+    icon: IndianRupee,
+    href: "/admin/donations",
+    color: "bg-green-600",
+  },
+  {
+    title: "Print Report",
+    icon: FileText,
+    href: "/admin/donations",
+    color: "bg-blue-600",
+  },
+  {
+    title: "Download PDF",
+    icon: Download,
+    href: "/admin/donations",
+    color: "bg-red-600",
+  },
+  {
+    title: "Gallery",
+    icon: Image,
     href: "/admin/gallery",
-    icon: "📸",
+    color: "bg-purple-600",
   },
   {
-    title: "Add Update",
-    href: "/admin/updates",
-    icon: "📰",
-  },
-  {
-    title: "Committee",
-    href: "/admin/committee",
-    icon: "👥",
-  },
-  {
-    title: "Settings",
-    href: "/admin/settings",
-    icon: "⚙️",
+    title: "Refresh",
+    icon: RefreshCw,
+    href: "/admin/dashboard",
+    color: "bg-slate-700",
   },
 ];
 
 export default function QuickActions() {
   return (
-    <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-2xl font-bold">
+    <div className="rounded-3xl bg-white p-6 shadow-xl">
+
+      <h2 className="mb-6 text-2xl font-bold text-slate-800">
         Quick Actions
       </h2>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {actions.map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            className="rounded-xl border border-orange-200 bg-orange-50 p-5 text-center transition hover:bg-orange-100"
-          >
-            <div className="text-4xl">
-              {action.icon}
-            </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-            <h3 className="mt-3 font-semibold">
-              {action.title}
-            </h3>
-          </Link>
-        ))}
+        {actions.map((action) => {
+          const Icon = action.icon;
+
+          return (
+            <Link
+              key={action.title}
+              href={action.href}
+              className={`${action.color} rounded-2xl p-6 text-white transition hover:scale-105`}
+            >
+              <Icon size={40} />
+
+              <h3 className="mt-4 text-xl font-bold">
+                {action.title}
+              </h3>
+            </Link>
+          );
+        })}
+
       </div>
+
     </div>
   );
 }

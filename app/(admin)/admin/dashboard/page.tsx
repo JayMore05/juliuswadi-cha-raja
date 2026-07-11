@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import DashboardStats from "@/components/admin/dashboard/DashboardStats";
+import RecentDonations from "@/components/admin/dashboard/RecentDonations";
+import TodayCollection from "@/components/admin/dashboard/TodayCollection";
+import QuickActions from "@/components/admin/dashboard/QuickActions";
 
 const cards = [
   {
@@ -63,6 +67,11 @@ export default function DashboardPage() {
         </p>
 
       </div>
+<DashboardStats />
+<RecentDonations />
+<QuickActions />
+<RecentDonations />
+
 
       {/* Dashboard Cards */}
 

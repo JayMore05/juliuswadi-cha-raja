@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { GoogleAnalytics } from "@next/third-parties/google";
+import StructuredData from "@/components/seo/StructuredData";
+
 import {
   Inter,
   Cormorant_Garamond,
@@ -42,6 +45,7 @@ export const metadata: Metadata = {
 
   keywords: [
     "Juliuswadi Cha Raja",
+    "Juliuswadi Sarvajanik Ganeshotsav",
     "Ganpati Mandal",
     "Ganesh Festival",
     "Ganesh Chaturthi",
@@ -49,9 +53,10 @@ export const metadata: Metadata = {
     "Ganesh Utsav",
     "Marathi Aarti",
     "Ganpati Aarti",
-    "Kolhapur Ganpati",
+    "Mumbai Ganpati",
+    "Malad Ganpati",
+    "Malwani Ganpati",
     "Maharashtra Ganesh Mandal",
-    "Ganesh Festival Kolhapur",
   ],
 
   authors: [
@@ -69,11 +74,25 @@ export const metadata: Metadata = {
   category: "Religious Organization",
 
   verification: {
-    google: "lKJODJXKNamC5Wng4WMfNmiRtHTewnPZjTc8vfooqqQ",
+    google: "7unGvg0Sz1wbgDZsxaYvKMUpBzsdOv3NitHBEpOTzew",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
     title: "Juliuswadi Cha Raja",
+
     description:
       "Official website of Juliuswadi Cha Raja Ganpati Mandal.",
 
@@ -106,22 +125,22 @@ export const metadata: Metadata = {
     images: ["/logo/logo.png"],
   },
 
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-
   icons: {
     icon: "/logo/logo.png",
     shortcut: "/logo/logo.png",
     apple: "/logo/logo.png",
+  },
+
+  appleWebApp: {
+    capable: true,
+    title: "Juliuswadi Cha Raja",
+    statusBarStyle: "default",
+  },
+
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
   },
 };
 
@@ -143,8 +162,12 @@ export default function RootLayout({
           antialiased
         `}
       >
+        <StructuredData />
+
         {children}
       </body>
+
+      <GoogleAnalytics gaId="G-6VMC2M8XRX" />
     </html>
   );
 }

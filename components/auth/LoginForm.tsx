@@ -31,23 +31,25 @@ export default function LoginForm() {
       return;
     }
 
-    router.push("/admin");
+    router.replace("/admin/dashboard");
+    router.refresh();
   }
 
   return (
     <form
       onSubmit={handleLogin}
-      className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl"
+      className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl"
     >
-      <h1 className="text-3xl font-bold text-orange-600 text-center">
+      <h1 className="text-center text-3xl font-bold text-orange-600">
         Admin Login
       </h1>
 
       <p className="mt-2 text-center text-gray-500">
-        Juliuswadi Cha Raja CMS
+        Juliuswadi Cha Raja Admin Panel
       </p>
 
       <div className="mt-8 space-y-5">
+
         <div>
           <label className="mb-2 block text-sm font-medium">
             Email
@@ -56,9 +58,10 @@ export default function LoginForm() {
           <input
             type="email"
             required
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border p-3 outline-none focus:border-orange-500"
+            className="w-full rounded-xl border p-3 outline-none transition focus:border-orange-500"
           />
         </div>
 
@@ -70,24 +73,27 @@ export default function LoginForm() {
           <input
             type="password"
             required
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border p-3 outline-none focus:border-orange-500"
+            className="w-full rounded-xl border p-3 outline-none transition focus:border-orange-500"
           />
         </div>
 
         {error && (
-          <p className="text-sm text-red-600">
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
             {error}
-          </p>
+          </div>
         )}
 
         <button
+          type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-orange-600 py-3 font-semibold text-white transition hover:bg-orange-700 disabled:opacity-50"
+          className="w-full rounded-xl bg-orange-600 py-3 font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Signing In..." : "Sign In"}
         </button>
+
       </div>
     </form>
   );

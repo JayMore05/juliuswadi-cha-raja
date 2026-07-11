@@ -1,41 +1,65 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 
-interface AdminHeaderProps {
+interface Props {
   onMenuClick: () => void;
 }
 
 export default function AdminHeader({
   onMenuClick,
-}: AdminHeaderProps) {
+}: Props) {
+  const router = useRouter();
+
+  async function handleLogout() {
+    const confirmLogout = confirm(
+      "Are you sure you want to logout?"
+    );
+
+    if (!confirmLogout) return;
+
+    await supabase.auth.signOut();
+
+    router.replace("/admin/login");
+    router.refresh();
+  }
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 md:h-20 items-center justify-between border-b bg-white px-4 md:px-8 shadow-sm">
+    <header className="sticky top-0 z-40 border-b bg-white/90 backdrop-blur">
 
-      <div className="flex items-center gap-3">
+      <div className="flex h-16 items-center justify-between px-6">
 
-        <button
-          onClick={onMenuClick}
-          className="rounded-lg p-2 hover:bg-gray-100 md:hidden"
-        >
-          <Menu size={24} />
-        </button>
+        <div className="flex items-center gap-4">
 
-        <div>
-          <h2 className="text-xl font-bold md:text-2xl">
-            Dashboard
-          </h2>
+          <button
+            onClick={onMenuClick}
+            className="rounded-lg border p-2 transition hover:bg-orange-50 lg:hidden"
+          >
+            <Menu size={20} />
+          </button>
 
-          <p className="hidden text-sm text-gray-500 md:block">
-            Welcome to Juliuswadi Cha Raja CMS
-          </p>
+          <div>
+            <h1 className="text-lg font-bold text-orange-600">
+              Juliuswadi Cha Raja
+            </h1>
+
+            <p className="text-xs text-gray-500">
+              Admin Dashboard
+            </p>
+          </div>
+
         </div>
 
-      </div>
+        <button
+          onClick={handleLogout}
+          className="rounded-xl bg-orange-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-700"
+        >
+          Logout
+        </button>
 
-      <button className="rounded-lg bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700 md:px-5">
-        Logout
-      </button>
+      </div>
 
     </header>
   );
