@@ -116,3 +116,46 @@ body {
   padding-top: 7rem;
   padding-bottom: 7rem;
 }
+
+/* =====================================================
+   Print Styles
+===================================================== */
+
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    background: white !important;
+    overflow: hidden !important;
+  }
+
+  body {
+    zoom: 88%;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  table,
+  tr,
+  td,
+  th,
+  div {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  img,
+  canvas,
+  svg {
+    max-width: 100% !important;
+  }
+} 

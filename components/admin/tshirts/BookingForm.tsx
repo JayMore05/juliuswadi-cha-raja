@@ -38,6 +38,7 @@ export default function BookingForm() {
       donation_receipt_no: "",
       remarks: "",
       payment_mode: "Cash",
+      volunteer_name: "Jay More (Admin)",
       total_quantity: 1,
       total_amount: PRICE,
       items: [
@@ -170,9 +171,13 @@ export default function BookingForm() {
 
             <input
               {...register("phone")}
+              type="tel"
               inputMode="numeric"
               maxLength={10}
               placeholder="9876543210"
+              onInput={(e) => {
+                e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+              }}
               className="w-full rounded-xl border p-3 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-300"
             />
 
@@ -209,6 +214,52 @@ export default function BookingForm() {
               <option value="Cash">💵 Cash</option>
               <option value="UPI">📱 UPI</option>
             </select>
+          </div>
+
+          {/* Booking Taken By Radio Group */}
+          <div className="md:col-span-2">
+            <label className="mb-3 block text-sm font-semibold">
+              Booking Taken By
+              <span className="text-red-500"> *</span>
+            </label>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              <label className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer">
+                <input
+                  type="radio"
+                  value="Nikhil Patil"
+                  {...register("volunteer_name")}
+                />
+                Nikhil Patil
+              </label>
+
+              <label className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer">
+                <input
+                  type="radio"
+                  value="Sachin Gupta"
+                  {...register("volunteer_name")}
+                />
+                Sachin Gupta
+              </label>
+
+              <label className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer">
+                <input
+                  type="radio"
+                  value="Pratik Tawre"
+                  {...register("volunteer_name")}
+                />
+                Pratik Tawre
+              </label>
+
+              <label className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer">
+                <input
+                  type="radio"
+                  value="Jay More (Admin)"
+                  {...register("volunteer_name")}
+                />
+                Jay More (Admin)
+              </label>
+            </div>
           </div>
         </div>
 
@@ -276,14 +327,13 @@ export default function BookingForm() {
                     {...register(`items.${index}.tshirt_size`)}
                     className="w-full rounded-xl border p-3"
                   >
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                    <option value="XXL">XXL</option>
-                    <option value="3XL">3XL</option>
-                    <option value="4XL">4XL</option>
+                    <option value="XS">XS (34)</option>
+                    <option value="S">S (36)</option>
+                    <option value="M">M (38)</option>
+                    <option value="L">L (40)</option>
+                    <option value="XL">XL (42)</option>
+                    <option value="XXL">XXL (44)</option>
+                    <option value="3XL">XXXL (46)</option>
                   </select>
                 </div>
 

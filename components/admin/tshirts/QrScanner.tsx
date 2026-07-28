@@ -62,18 +62,25 @@ export default function QrScanner({
       if (startedRef.current && scanner.isScanning) {
         scanner
           .stop()
-          .then(() => scanner.clear())
+          .then(() => {
+            try {
+              scanner.clear();
+            } catch {}
+          })
           .catch(() => {});
       }
     };
   }, [onScan]);
 
   async function handleClose() {
-    if (startedRef.current && scannerRef.current?.isScanning) {
+    if (scannerRef.current) {
       try {
         await scannerRef.current.stop();
       } catch {}
-      await scannerRef.current?.clear().catch(() => {});
+
+      try {
+        scannerRef.current.clear();
+      } catch {}
     }
     onClose();
   }

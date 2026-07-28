@@ -10,7 +10,6 @@ const SIZES = [
   "XL",
   "XXL",
   "3XL",
-  "4XL",
 ];
 
 interface Props {

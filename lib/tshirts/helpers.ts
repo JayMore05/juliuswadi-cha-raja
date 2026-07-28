@@ -71,7 +71,6 @@ export function getManufacturerSummary(
     XL: 0,
     XXL: 0,
     "3XL": 0,
-    "4XL": 0,
     total: 0,
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, User, CreditCard, FileText } from "lucide-react";
+import { Phone, User, CreditCard, FileText, UserCheck } from "lucide-react";
 import { TshirtBooking } from "@/types/tshirt";
 
 interface Props {
@@ -85,6 +85,21 @@ export default function ReceiptCustomer({
           </div>
         </div>
 
+        {/* Booking Taken By */}
+        <div className="flex items-start gap-3 md:col-span-2">
+          <UserCheck className="mt-1 h-5 w-5 text-amber-600" />
+
+          <div>
+            <p className="text-sm text-gray-500">
+              Booking Taken By
+            </p>
+
+            <p className="font-semibold text-lg">
+              {booking.volunteer_name || "-"}
+            </p>
+          </div>
+        </div>
+
       </div>
 
       {/* Remarks */}
@@ -105,4 +120,4 @@ export default function ReceiptCustomer({
 
     </div>
   );
-} 
+}

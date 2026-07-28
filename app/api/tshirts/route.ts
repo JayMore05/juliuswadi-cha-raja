@@ -218,6 +218,7 @@ export async function POST(request: Request) {
         phone: booking.phone,
         donation_receipt_no: booking.donation_receipt_no || null,
         remarks: booking.remarks || null,
+        volunteer_name: booking.volunteer_name,
         total_quantity: totalQuantity,
         total_amount: totalAmount,
         

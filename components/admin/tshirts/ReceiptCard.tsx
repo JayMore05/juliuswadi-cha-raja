@@ -28,9 +28,14 @@ interface Booking {
   donor_name: string;
   phone: string;
   donation_receipt_no: string | null;
+
+  volunteer_name: string;
+  remarks?: string;
+
   status: string;
   total_amount: number;
   created_at: string;
+
   items: BookingItem[];
   payments: BookingPayment[];
 }
@@ -45,10 +50,20 @@ export default function ReceiptCard({
   const receiptRef = useRef<HTMLDivElement>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [generatedOn, setGeneratedOn] = useState("");
+  const [qrSize, setQrSize] = useState(85);
 
   useEffect(() => {
     setGeneratedOn(new Date().toLocaleString("en-IN"));
     document.title = `Receipt - ${booking.booking_id}`;
+
+    const updateQr = () => {
+      setQrSize(window.innerWidth < 640 ? 70 : 85);
+    };
+
+    updateQr();
+    window.addEventListener("resize", updateQr);
+
+    return () => window.removeEventListener("resize", updateQr);
   }, [booking.booking_id]);
 
   const totalQty =
@@ -66,7 +81,7 @@ export default function ReceiptCard({
 
       const dataUrl = await toPng(receiptRef.current!, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 1.5,
       });
 
       const link = document.createElement("a");
@@ -97,41 +112,43 @@ export default function ReceiptCard({
     <div className={isGeneratingPdf ? "cursor-wait" : ""}>
       <div 
         ref={receiptRef}
-        className="mx-auto max-w-4xl rounded-3xl border bg-white shadow-xl print:border-0 print:shadow-none"
+        className="mx-auto max-w-[760px] rounded-3xl border bg-white shadow-xl print:w-full print:max-w-none print:rounded-none print:border-0 print:shadow-none"
       >
 
         {/* Header */}
-        <div className="rounded-t-3xl bg-orange-600 px-8 py-8 text-center text-white">
-          <h1 className="text-4xl font-bold">
+        <div className="rounded-t-3xl bg-orange-600 px-5 py-3 text-center text-white print:rounded-t-none">
+          <h1 className="text-lg sm:text-xl font-bold">
             Juliuswadi Cha Raja
           </h1>
 
-          <p className="mt-2 text-lg">
+          <p className="mt-1 text-sm">
             Official T-Shirt Booking Receipt
           </p>
         </div>
 
         {/* Receipt Body */}
-        <div className="space-y-8 p-8">
+        <div className="space-y-4 p-4 sm:p-5 md:p-6">
 
-          {/* Booking Details */}
-          <div className="grid gap-5 md:grid-cols-2">
+          {/* Booking & Customer Details */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-            <div>
-              <h3 className="mb-3 text-xl font-bold text-orange-600">
+            <div className="print:break-inside-avoid">
+              <h3 className="mb-2 text-lg font-bold text-orange-600">
                 Booking Details
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-2 text-sm">
                 <p>
                   <strong>Booking ID:</strong>{" "}
-                  {booking.booking_id}
+                  <span className="break-all">
+                    {booking.booking_id}
+                  </span>
                 </p>
 
                 <p>
                   <strong>Status:</strong>{" "}
                   <span
-                    className={`rounded-full px-3 py-1 text-sm font-semibold print:border print:border-gray-500 print:bg-white print:text-black ${
+                    className={`rounded-full px-3 py-0.5 text-xs font-semibold print:border print:border-gray-500 print:bg-white print:text-black ${
                       booking.status === "Booked"
                         ? "bg-blue-100 text-blue-700"
                         : booking.status === "Ready for Collection"
@@ -149,15 +166,20 @@ export default function ReceiptCard({
                   <strong>Payment:</strong>{" "}
                   {booking.payments?.[0]?.payment_mode || "-"}
                 </p>
+
+                <p>
+                  <strong>Booking Date:</strong>{" "}
+                  {new Date(booking.created_at).toLocaleDateString("en-IN")}
+                </p>
               </div>
             </div>
 
-            <div>
-              <h3 className="mb-3 text-xl font-bold text-orange-600">
+            <div className="print:break-inside-avoid">
+              <h3 className="mb-2 text-lg font-bold text-orange-600">
                 Customer Details
               </h3>
 
-              <div className="space-y-2">
+              <div className="space-y-2 text-sm">
                 <p>
                   <strong>Name:</strong>{" "}
                   {booking.donor_name}
@@ -165,40 +187,58 @@ export default function ReceiptCard({
 
                 <p>
                   <strong>Phone:</strong>{" "}
-                  {booking.phone}
+                  <span className="break-all">
+                    {booking.phone}
+                  </span>
                 </p>
 
                 <p>
                   <strong>Receipt No:</strong>{" "}
-                  {booking.donation_receipt_no || "-"}
+                  <span className="break-all">
+                    {booking.donation_receipt_no || "-"}
+                  </span>
+                </p>
+
+                <p>
+                  <strong>Booking Taken By:</strong>{" "}
+                  <span className="break-words">
+                    {booking.volunteer_name}
+                  </span>
                 </p>
               </div>
             </div>
 
           </div>
 
+          {/* Remarks */}
+          {booking.remarks && (
+            <div className="rounded-lg border bg-gray-50 p-3 text-sm">
+              <strong>Remarks:</strong> {booking.remarks}
+            </div>
+          )}
+
           {/* ==========================================
               T-SHIRT DETAILS
           =========================================== */}
-          <div>
-            <h3 className="mb-4 text-xl font-bold text-orange-600">
+          <div className="print:break-inside-avoid">
+            <h3 className="mb-3 text-lg font-bold text-orange-600">
               T-Shirt Details
             </h3>
 
-            <div className="rounded-xl border print:overflow-visible overflow-hidden">
-              <table className="w-full">
+            <div className="overflow-x-auto rounded-xl border print:overflow-visible">
+              <table className="min-w-[500px] w-full text-sm">
                 <thead className="bg-orange-100">
                   <tr>
-                    <th className="px-4 py-3 text-left">
+                    <th className="px-4 py-2.5 text-left">
                       Size
                     </th>
-                    <th className="px-4 py-3 text-center">
+                    <th className="px-4 py-2.5 text-center">
                       Qty
                     </th>
-                    <th className="px-4 py-3 text-right">
+                    <th className="px-4 py-2.5 text-right">
                       Price
                     </th>
-                    <th className="px-4 py-3 text-right">
+                    <th className="px-4 py-2.5 text-right">
                       Total
                     </th>
                   </tr>
@@ -210,22 +250,22 @@ export default function ReceiptCard({
                         key={item.id}
                         className="border-t"
                       >
-                        <td className="px-4 py-3 font-semibold">
+                        <td className="px-4 py-2.5 font-semibold">
                           {item.tshirt_size}
                         </td>
 
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-4 py-2.5 text-center">
                           {item.quantity}
                         </td>
 
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-4 py-2.5 text-right">
                           {Number(item.price).toLocaleString("en-IN", {
                             style: "currency",
                             currency: "INR",
                           })}
                         </td>
 
-                        <td className="px-4 py-3 text-right font-bold">
+                        <td className="px-4 py-2.5 text-right font-bold">
                           {Number(item.subtotal).toLocaleString("en-IN", {
                             style: "currency",
                             currency: "INR",
@@ -242,23 +282,23 @@ export default function ReceiptCard({
           {/* ==========================================
               SUMMARY
           =========================================== */}
-          <div className="rounded-xl bg-orange-50 p-6">
-            <div className="flex items-center justify-between border-b pb-3">
+          <div className="rounded-xl bg-orange-50 p-4 print:break-inside-avoid">
+            <div className="flex items-center justify-between border-b pb-2 text-sm">
               <span className="font-medium">
                 Total Quantity
               </span>
 
-              <span className="text-xl font-bold">
+              <span className="font-bold">
                 {totalQty}
               </span>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-xl font-bold">
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-base font-bold">
                 Grand Total
               </span>
 
-              <span className="text-3xl font-extrabold text-green-600">
+              <span className="text-xl font-extrabold text-green-600">
                 {Number(booking.total_amount).toLocaleString("en-IN", {
                   style: "currency",
                   currency: "INR",
@@ -268,104 +308,76 @@ export default function ReceiptCard({
           </div>
 
           {/* ==========================================
-              BOOKING QR
+              BOOKING QR & INSTRUCTIONS
           =========================================== */}
-          <div className="rounded-2xl border-2 border-dashed border-orange-300 bg-orange-50 p-6">
-            <div className="grid gap-6 md:grid-cols-2 md:items-center">
-
-              {/* Left */}
-              <div>
-                <h3 className="text-2xl font-bold text-orange-600">
-                  Scan During Collection
-                </h3>
-
-                <p className="mt-3 text-gray-600">
-                  Show this receipt while collecting your
-                  official Juliuswadi Cha Raja T-Shirt.
-                </p>
-
-                <div className="mt-6 rounded-xl bg-white p-4 shadow">
-                  <p className="text-sm text-gray-500">
-                    Booking ID
-                  </p>
-                  <p className="mt-1 text-2xl font-extrabold text-orange-600">
-                    {booking.booking_id}
-                  </p>
-                </div>
+          <div className="grid gap-4 md:grid-cols-2 print:break-inside-avoid">
+            
+            {/* QR Section */}
+            <div className="flex items-center justify-center rounded-2xl border-2 border-dashed border-orange-300 bg-orange-50 p-3 sm:p-4">
+              <div
+                id="receipt-qr"
+                className="rounded-xl bg-white p-3 shadow"
+              >
+                <QRCodeCanvas
+                  value={JSON.stringify({
+                    bookingId: booking.id,
+                    bookingNumber: booking.booking_id,
+                    donor: booking.donor_name,
+                    phone: booking.phone,
+                    quantity: totalQty,
+                    receiptNo: booking.donation_receipt_no,
+                    amount: booking.total_amount,
+                    status: booking.status,
+                    createdAt: booking.created_at,
+                    paymentMode: booking.payments?.[0]?.payment_mode,
+                    volunteer: booking.volunteer_name,
+                  })}
+                  size={qrSize}
+                  level="H"
+                  includeMargin
+                />
               </div>
-
-              {/* Right */}
-              <div className="flex justify-center">
-                <div
-                  id="receipt-qr"
-                  className="rounded-2xl bg-white p-5 shadow-lg"
-                >
-                  <QRCodeCanvas
-                    value={JSON.stringify({
-                      bookingId: booking.id,
-                      bookingNumber: booking.booking_id,
-                      donor: booking.donor_name,
-                      phone: booking.phone,
-                      quantity: totalQty,
-                      receiptNo: booking.donation_receipt_no,
-                      amount: booking.total_amount,
-                      status: booking.status,
-                      createdAt: booking.created_at,
-                      paymentMode: booking.payments?.[0]?.payment_mode,
-                    })}
-                    size={200}
-                    level="H"
-                    includeMargin
-                  />
-                </div>
-              </div>
-
             </div>
-          </div>
 
-          {/* ==========================================
-              IMPORTANT NOTE
-          =========================================== */}
-          <div className="rounded-xl bg-yellow-50 p-5">
-            <h3 className="font-bold text-yellow-800">
-              Important
-            </h3>
+            {/* Important Notes */}
+            <div className="rounded-xl bg-yellow-50 p-3 flex flex-col justify-center">
+              <h3 className="font-bold text-yellow-800 text-sm">
+                Important Instructions
+              </h3>
 
-            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700">
-              <li>
-                Please carry this receipt during T-Shirt collection.
-              </li>
-              <li>
-                The QR Code will be scanned by the volunteer.
-              </li>
-              <li>
-                After successful verification, the T-Shirt will be marked as delivered.
-              </li>
-            </ul>
+              <ul className="mt-2 list-disc space-y-0.5 pl-4 text-xs text-gray-700">
+                <li>
+                  Please carry this receipt during T-Shirt collection.
+                </li>
+                <li>
+                  The QR Code will be scanned by the volunteer.
+                </li>
+                <li>
+                  After successful verification, the T-Shirt will be marked as delivered.
+                </li>
+              </ul>
+            </div>
+
           </div>
 
           {/* ==========================================
               FOOTER
           =========================================== */}
-          <div className="border-t pt-8 text-center">
-            <h3 className="text-xl font-bold text-orange-600">
+          <div className="border-t pt-2 text-center print:break-inside-avoid">
+            <h3 className="text-base font-bold text-orange-600">
               Juliuswadi Cha Raja
             </h3>
 
-            <p className="mt-2 text-gray-500">
-              Thank you for supporting Juliuswadi Cha Raja.
+            <p className="mt-1 text-xs text-gray-500">
+              Thank you for supporting Juliuswadi Cha Raja. Please keep this receipt safely until T-Shirt collection.
             </p>
 
-            <p className="mt-1 text-sm text-gray-400">
-              Please keep this receipt safely until T-Shirt collection.
-            </p>
-
-            <div className="mt-3 text-xs text-gray-400 space-y-1">
-              <p>
-                Booking Created : {new Date(booking.created_at).toLocaleString("en-IN")}
-              </p>
+            <div className="mt-2 flex flex-col gap-1 text-center text-[11px] text-gray-400 sm:flex-row sm:justify-center sm:gap-4">
+              <span>
+                Booking Created: {new Date(booking.created_at).toLocaleString("en-IN")}
+              </span>
               {generatedOn && (
-                <p>Receipt Generated : {generatedOn}</p>
+                <span>Receipt Generated: {generatedOn}</span>
               )}
             </div>
           </div>
@@ -376,13 +388,13 @@ export default function ReceiptCard({
       {/* ==========================================
           ACTION BUTTONS
       =========================================== */}
-      <div className="print:hidden mt-6 mx-auto max-w-4xl">
+      <div className="print:hidden mt-6 mx-auto w-full max-w-3xl px-2 sm:px-0">
         {isGeneratingPdf && (
           <div className="mb-4 text-center text-sm font-semibold text-orange-600 animate-pulse">
             Preparing Image...
           </div>
         )}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             type="button"
             aria-label="Print receipt"
@@ -415,7 +427,7 @@ export default function ReceiptCard({
             disabled={isGeneratingPdf}
             onClick={() => {
               const receiptUrl = `${window.location.origin}/admin/tshirts/receipt/${booking.booking_id}`;
-              const message = `🛕 Juliuswadi Cha Raja\n\n📄 Booking ID: ${booking.booking_id}\n👤 Name: ${booking.donor_name}\n📱 Phone: ${booking.phone}\n👕 Quantity: ${totalQty}\n💰 Amount: ₹${booking.total_amount}\n\nPlease keep this receipt safely.\n${receiptUrl}`;
+              const message = `🛕 Juliuswadi Cha Raja\n\n📄 Booking ID: ${booking.booking_id}\n👤 Name: ${booking.donor_name}\n📱 Phone: ${booking.phone}\n👕 Quantity: ${totalQty}\n💰 Amount: ₹${booking.total_amount}\n🙋 Booking Taken By: ${booking.volunteer_name}\n\nPlease keep this receipt safely.\n${receiptUrl}`;
 
               window.open(
                 `https://wa.me/?text=${encodeURIComponent(message)}`,

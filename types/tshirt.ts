@@ -5,8 +5,7 @@ export type TshirtSize =
   | "L"
   | "XL"
   | "XXL"
-  | "3XL"
-  | "4XL";
+  | "3XL";
 
 export type PaymentMode =
   | "Cash"
@@ -66,6 +65,8 @@ export interface TshirtBooking {
   donation_receipt_no?: string;
 
   remarks?: string;
+
+  volunteer_name?: string;
 
   payment_mode: PaymentMode;
 
@@ -145,10 +146,9 @@ export interface ManufacturerSummary {
 
   "3XL": number;
 
-  "4XL": number;
-
   total: number;
 }
+
 export interface DashboardStats {
   totalBookings: number;
   todayBookings: number;
@@ -172,6 +172,5 @@ export interface DashboardStats {
     XL: number;
     XXL: number;
     "3XL": number;
-    "4XL": number;
   };
 }

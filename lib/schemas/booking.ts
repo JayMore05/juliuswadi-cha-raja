@@ -8,12 +8,19 @@ export const tshirtSizes = [
   "XL",
   "XXL",
   "3XL",
-  "4XL",
+  
 ] as const;
 
 export const paymentModes = [
   "Cash",
   "UPI",
+] as const;
+
+export const volunteers = [
+  "Nikhil Patil",
+  "Sachin Gupta",
+  "Pratik Tawre",
+  "Jay More (Admin)",
 ] as const;
 
 export const bookingStatuses = [
@@ -53,10 +60,12 @@ export const bookingSchema = z.object({
 
   phone: z
     .string()
-    .trim()
-    .regex(
-      /^[6-9]\d{9}$/,
-      "Enter valid mobile number"
+    .transform((val) => val.replace(/\D/g, ""))
+    .pipe(
+      z
+        .string()
+        .length(10, "Enter valid 10-digit mobile number")
+        .regex(/^[6-9]\d{9}$/, "Enter valid mobile number")
     ),
 
   donation_receipt_no: z
@@ -71,6 +80,8 @@ export const bookingSchema = z.object({
     .optional(),
 
   payment_mode: z.enum(paymentModes),
+
+  volunteer_name: z.enum(volunteers),
 
   total_quantity: z
     .number()

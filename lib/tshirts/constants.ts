@@ -14,7 +14,7 @@ export const MANDAL_NAME =
    Sizes
 ====================================== */
 
-export const TSHIRT_SIZES: TshirtSize[] = [
+export const TSHIRT_SIZES = [
   "XS",
   "S",
   "M",
@@ -22,8 +22,7 @@ export const TSHIRT_SIZES: TshirtSize[] = [
   "XL",
   "XXL",
   "3XL",
-  "4XL",
-];
+] as const;
 
 /* ======================================
    Statuses
