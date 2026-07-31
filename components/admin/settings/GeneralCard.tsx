@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/Input";
 import { useSettingsContext } from "./provider/SettingsProvider";
 
@@ -53,10 +53,10 @@ export default function GeneralCard() {
       <div className="mt-8 flex justify-end">
         <Button
           type="button"
-          loading={saving}
+          disabled={saving}
           onClick={save}
         >
-          Save General Information
+          {saving ? "Saving..." : "Save Settings"} 
         </Button>
       </div>
     </div>

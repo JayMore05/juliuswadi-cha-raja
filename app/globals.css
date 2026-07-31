@@ -1,18 +1,48 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 /* =====================================================
    Root Theme
 ===================================================== */
 
 :root {
-  --background: #fff8f2;
-  --foreground: #1f2937;
 
-  --primary: #ea580c;
-  --secondary: #f6c453;
+  --primary: oklch(0.205 0 0);
+  --secondary: oklch(0.97 0 0);
 
-  --card: #ffffff;
-  --border: #f1e4cf;
+  --card: oklch(1 0 0);
+  --border: oklch(0.922 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 /* =====================================================
@@ -37,8 +67,6 @@ body {
       #fff8f2 45%,
       #ffffff 100%
     );
-
-  color: var(--foreground);
 
   overflow-x: hidden;
 }
@@ -158,4 +186,331 @@ body {
   svg {
     max-width: 100% !important;
   }
-} 
+}
+
+/* =====================================================
+   Receipt
+===================================================== */
+
+.receipt-card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, .08);
+}
+
+.receipt-header {
+  background: linear-gradient(135deg, #ea580c, #fb923c);
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.receipt-body {
+  position: relative;
+  padding: 1.5rem;
+}
+
+.receipt-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: .03;
+  pointer-events: none;
+}
+
+.receipt-section-title {
+  color: #ea580c;
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: .75rem;
+}
+
+.receipt-booking-id {
+  margin-top: .5rem;
+  padding: .9rem;
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: #c2410c;
+  background: #fff7ed;
+  border: 2px solid #ea580c;
+  border-radius: 1rem;
+}
+
+.receipt-booking-id:hover {
+  background: #ffedd5;
+}
+
+.receipt-stamp {
+  display: inline-block;
+  padding: .6rem 2rem;
+  border: 4px solid #ea580c;
+  color: #ea580c;
+  border-radius: .9rem;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: .15em;
+  transform: rotate(-8deg);
+}
+
+.receipt-stamp.delivered {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.receipt-summary {
+  background: #fff7ed;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.receipt-qr-box {
+  background: #fff7ed;
+  border: 2px dashed #fdba74;
+  border-radius: 18px;
+  padding: 1rem;
+}
+
+.receipt-note {
+  background: #fefce8;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.receipt-danger {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: .9rem;
+  text-align: center;
+}
+
+.receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.receipt-table thead {
+  background: #ffedd5;
+}
+
+.receipt-table th,
+.receipt-table td {
+  padding: .75rem 1rem;
+}
+
+.receipt-table tbody tr {
+  border-top: 1px solid #e5e7eb;
+}
+
+.receipt-footer {
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.receipt-copy-success {
+  animation: receiptFade .25s ease;
+}
+
+@keyframes receiptFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+
+  .receipt-card {
+    border-radius: 18px;
+  }
+
+  .receipt-header {
+    padding: 1rem;
+  }
+
+  .receipt-body {
+    padding: 1rem;
+  }
+
+  .receipt-booking-id {
+    font-size: 1.45rem;
+  }
+
+  .receipt-stamp {
+    font-size: 1.45rem;
+    padding: .5rem 1.4rem;
+  }
+}
+
+@theme inline {
+
+  --font-heading: var(--font-sans);
+
+  --font-sans: var(--font-sans);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-sidebar-border: var(--sidebar-border);
+
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+
+  --color-sidebar-accent: var(--sidebar-accent);
+
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+
+  --color-sidebar-primary: var(--sidebar-primary);
+
+  --color-sidebar-foreground: var(--sidebar-foreground);
+
+  --color-sidebar: var(--sidebar);
+
+  --color-chart-5: var(--chart-5);
+
+  --color-chart-4: var(--chart-4);
+
+  --color-chart-3: var(--chart-3);
+
+  --color-chart-2: var(--chart-2);
+
+  --color-chart-1: var(--chart-1);
+
+  --color-ring: var(--ring);
+
+  --color-input: var(--input);
+
+  --color-border: var(--border);
+
+  --color-destructive: var(--destructive);
+
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-accent: var(--accent);
+
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-muted: var(--muted);
+
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-secondary: var(--secondary);
+
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-primary: var(--primary);
+
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-popover: var(--popover);
+
+  --color-card-foreground: var(--card-foreground);
+
+  --color-card: var(--card);
+
+  --color-foreground: var(--foreground);
+
+  --color-background: var(--background);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+
+  --radius-md: calc(var(--radius) * 0.8);
+
+  --radius-lg: var(--radius);
+
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  --radius-2xl: calc(var(--radius) * 1.8);
+
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+.dark {
+
+  --background: oklch(0.145 0 0);
+
+  --foreground: oklch(0.985 0 0);
+
+  --card: oklch(0.205 0 0);
+
+  --card-foreground: oklch(0.985 0 0);
+
+  --popover: oklch(0.205 0 0);
+
+  --popover-foreground: oklch(0.985 0 0);
+
+  --primary: oklch(0.922 0 0);
+
+  --primary-foreground: oklch(0.205 0 0);
+
+  --secondary: oklch(0.269 0 0);
+
+  --secondary-foreground: oklch(0.985 0 0);
+
+  --muted: oklch(0.269 0 0);
+
+  --muted-foreground: oklch(0.708 0 0);
+
+  --accent: oklch(0.269 0 0);
+
+  --accent-foreground: oklch(0.985 0 0);
+
+  --destructive: oklch(0.704 0.191 22.216);
+
+  --border: oklch(1 0 0 / 10%);
+
+  --input: oklch(1 0 0 / 15%);
+
+  --ring: oklch(0.556 0 0);
+
+  --chart-1: oklch(0.87 0 0);
+
+  --chart-2: oklch(0.556 0 0);
+
+  --chart-3: oklch(0.439 0 0);
+
+  --chart-4: oklch(0.371 0 0);
+
+  --chart-5: oklch(0.269 0 0);
+
+  --sidebar: oklch(0.205 0 0);
+
+  --sidebar-foreground: oklch(0.985 0 0);
+
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+
+  --sidebar-accent: oklch(0.269 0 0);
+
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+
+  --sidebar-border: oklch(1 0 0 / 10%);
+
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

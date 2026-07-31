@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import { useSettingsContext } from "./provider/SettingsProvider";
@@ -52,10 +52,10 @@ export default function ContactCard() {
       <div className="mt-8 flex justify-end">
         <Button
           type="button"
-          loading={saving}
           onClick={save}
+          disabled={saving}
         >
-          Save Contact Information
+          {saving ? "Saving..." : "Save Contact Information"}
         </Button>
       </div>
     </div>

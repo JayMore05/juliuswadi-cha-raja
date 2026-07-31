@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { UpdateItem } from "@/types/update";
 import { deleteUpdate } from "@/lib/services/updates";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 interface UpdateCardProps {
   update: UpdateItem;

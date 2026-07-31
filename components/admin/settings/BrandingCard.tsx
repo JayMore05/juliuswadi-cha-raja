@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useSettingsContext } from "./provider/SettingsProvider";
 
 export default function BrandingCard() {
@@ -59,10 +59,10 @@ export default function BrandingCard() {
       <div className="mt-8 flex justify-end">
         <Button
           type="button"
-          loading={saving}
           onClick={save}
+          disabled={saving}
         >
-          Save Branding
+          {saving ? "Saving..." : "Save Branding"}
         </Button>
       </div>
     </div>

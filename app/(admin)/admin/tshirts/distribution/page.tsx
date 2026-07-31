@@ -1,17 +1,63 @@
 import DistributionClient from "@/components/admin/tshirts/DistributionClient";
+import { PackageCheck } from "lucide-react";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export default function DistributionPage() {
+export default async function DistributionPage() {
+  const supabase = await createSupabaseServerClient();
+
+  const [{ count: totalBookings }, { count: pending }, { count: delivered }] =
+    await Promise.all([
+      supabase
+        .from("tshirt_bookings")
+        .select("*", { count: "exact", head: true }),
+
+      supabase
+        .from("tshirt_bookings")
+        .select("*", { count: "exact", head: true })
+        .neq("status", "Delivered"),
+
+      supabase
+        .from("tshirt_bookings")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "Delivered"),
+    ]);
+
+  const { data: items } = await supabase
+    .from("tshirt_booking_items")
+    .select("quantity");
+
+  const totalTshirts =
+    items?.reduce((sum, item) => sum + Number(item.quantity), 0) ?? 0;
+
   return (
-    <div className="mx-auto max-w-7xl p-6">
-      <h1 className="mb-2 text-3xl font-bold">
-        T-Shirt Distribution
-      </h1>
+    <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8">
+      {/* Header */}
 
-      <p className="mb-8 text-gray-500">
-        Search using Booking ID, Phone Number or scan the QR Code.
-      </p>
+      <div className="mb-8 flex items-start gap-4">
+        <div className="rounded-2xl bg-orange-100 p-3">
+          <PackageCheck className="h-8 w-8 text-orange-600" />
+        </div>
 
-      <DistributionClient />
+        <div>
+          <h1 className="text-3xl font-extrabold text-orange-700">
+            T-Shirt Distribution
+          </h1>
+
+          <p className="mt-2 text-sm text-gray-500">
+            Search by Booking ID or Phone Number, or scan the QR code to verify
+            and distribute T-shirts.
+          </p>
+        </div>
+      </div>
+
+      <DistributionClient
+        stats={{
+          totalBookings: totalBookings ?? 0,
+          pending: pending ?? 0,
+          delivered: delivered ?? 0,
+          totalTshirts,
+        }}
+      />
     </div>
   );
 }

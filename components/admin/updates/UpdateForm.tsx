@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import { addUpdate } from "@/lib/services/updates";
@@ -109,9 +109,9 @@ export default function UpdateForm({
 
       <Button
         type="submit"
-        loading={loading}
+        disabled={loading}
       >
-        Publish Update
+        {loading ? "Saving..." : "Original Text"}
       </Button>
     </form>
   );

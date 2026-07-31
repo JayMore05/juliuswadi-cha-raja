@@ -5,6 +5,7 @@ import {
   BookOpen,
   Users,
   Settings,
+  Shirt,
 } from "lucide-react";
 
 export const adminMenu = [
@@ -32,6 +33,11 @@ export const adminMenu = [
     title: "Committee",
     href: "/admin/committee",
     icon: Users,
+  },
+  {
+    title: "👕 T-Shirt Management",
+    href: "/admin/tshirts",
+    icon: Shirt,
   },
   {
     title: "Settings",

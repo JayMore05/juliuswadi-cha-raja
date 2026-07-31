@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Link from "next/link";
-
 import {
   Package,
   Users,
   IndianRupee,
   Plus,
+  PackageCheck,
+  Factory,
+  Settings,
+  ClipboardList,
 } from "lucide-react";
 
 import BookingTable from "@/components/admin/tshirts/BookingTable";
@@ -60,19 +62,18 @@ export default function TshirtPage() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 p-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-4 md:space-y-8 md:p-6">
 
       {/* Header */}
-
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
         <div>
 
-          <h1 className="text-4xl font-bold text-orange-600">
+          <h1 className="text-2xl font-bold text-orange-600 md:text-4xl">
             👕 Merchandise Booking
           </h1>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 md:mt-2 md:text-base">
             Manage bookings and distribution.
           </p>
 
@@ -80,7 +81,7 @@ export default function TshirtPage() {
 
         <Link
           href="/admin/tshirts/new"
-          className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700 md:w-auto"
         >
 
           <Plus className="h-5 w-5" />
@@ -91,11 +92,90 @@ export default function TshirtPage() {
 
       </div>
 
+      {/* Quick Actions */}
+      <div className="space-y-4">
+
+        <h2 className="text-2xl font-bold">
+          Quick Actions
+        </h2>
+
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
+
+          <Link
+            href="/admin/tshirts/new"
+            className="rounded-2xl border bg-white p-4 md:p-6 shadow-sm transition hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg"
+          >
+            <Plus className="mb-2 h-8 w-8 md:mb-3 md:h-9 md:w-9 text-orange-600" />
+            <h3 className="text-sm font-bold md:text-base">New Booking</h3>
+            <p className="hidden text-sm text-gray-500 md:block">
+              Create a new booking
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/tshirts/distribution"
+            className="rounded-2xl border bg-white p-4 md:p-6 shadow-sm transition hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg"
+          >
+            <PackageCheck className="mb-2 h-8 w-8 md:mb-3 md:h-9 md:w-9 text-green-600" />
+            <h3 className="text-sm font-bold md:text-base">Distribution</h3>
+            <p className="hidden text-sm text-gray-500 md:block">
+              Scan & deliver T-Shirts
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/tshirts/reports"
+            className="rounded-2xl border bg-white p-4 md:p-6 shadow-sm transition hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg"
+          >
+            <ClipboardList className="mb-2 h-8 w-8 md:mb-3 md:h-9 md:w-9 text-blue-600" />
+            <h3 className="text-sm font-bold md:text-base">Reports</h3>
+            <p className="hidden text-sm text-gray-500 md:block">
+              Booking reports
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/tshirts/manufacturer"
+            className="rounded-2xl border bg-white p-4 md:p-6 shadow-sm transition hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg"
+          >
+            <Factory className="mb-2 h-8 w-8 md:mb-3 md:h-9 md:w-9 text-purple-600" />
+            <h3 className="text-sm font-bold md:text-base">Manufacturer</h3>
+            <p className="hidden text-sm text-gray-500 md:block">
+              Production summary
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/tshirts/settings"
+            className="rounded-2xl border bg-white p-4 md:p-6 shadow-sm transition hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg"
+          >
+            <Settings className="mb-2 h-8 w-8 md:mb-3 md:h-9 md:w-9 text-gray-700" />
+            <h3 className="text-sm font-bold md:text-base">Settings</h3>
+            <p className="hidden text-sm text-gray-500 md:block">
+              Booking settings
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/tshirts"
+            className="rounded-2xl border bg-orange-50 p-4 md:p-6 shadow-sm transition hover:-translate-y-1 hover:border-orange-500 hover:shadow-lg"
+          >
+            <Package className="mb-2 h-8 w-8 md:mb-3 md:h-9 md:w-9 text-orange-600" />
+            <h3 className="text-sm font-bold md:text-base">All Bookings</h3>
+            <p className="hidden text-sm text-gray-500 md:block">
+              View all bookings
+            </p>
+          </Link>
+
+        </div>
+
+      </div>
+
       {/* Dashboard */}
 
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
 
-        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border bg-white p-5 shadow-sm">
 
           <div className="flex items-center justify-between">
 
@@ -117,7 +197,7 @@ export default function TshirtPage() {
 
         </div>
 
-        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border bg-white p-5 shadow-sm">
 
           <div className="flex items-center justify-between">
 
@@ -139,7 +219,7 @@ export default function TshirtPage() {
 
         </div>
 
-        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border bg-white p-5 shadow-sm">
 
           <div className="flex items-center justify-between">
 
@@ -183,4 +263,4 @@ export default function TshirtPage() {
 
     </div>
   );
-}
+}             

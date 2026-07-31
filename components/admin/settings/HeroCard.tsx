@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import { useSettingsContext } from "./provider/SettingsProvider";
@@ -76,10 +76,10 @@ export default function HeroCard() {
       <div className="mt-8 flex justify-end">
         <Button
           type="button"
-          loading={saving}
+          disabled={saving}
           onClick={save}
         >
-          Save Hero Section
+          {saving ? "Saving..." : "Save Hero"} 
         </Button>
       </div>
     </div>

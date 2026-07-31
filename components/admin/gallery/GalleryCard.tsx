@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { toast } from "sonner";
 
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { deleteGallery } from "@/lib/services/gallery";
 
 interface Props {

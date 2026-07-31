@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface BookingItem {
-  id: string;
+  id?: string;
   tshirt_size: string;
   quantity: number;
   price: number;
+  subtotal: number;
 }
 
 interface BookingPayment {
@@ -41,12 +42,43 @@ const paymentModes = [
   "UPI",
 ];
 
+const tshirtSizes = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "XXXL",
+];
+
 export default function EditBookingForm({
   booking,
 }: Props) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [duplicateBooking, setDuplicateBooking] = useState<{
+    booking_id: string;
+    donor_name: string;
+  } | null>(null);
+
+  const [items, setItems] = useState(
+    booking.items.map((item) => ({
+      ...item,
+    }))
+  );
+
+  const defaultPrice = items[0]?.price ?? 0;
+
+  const totalQty = items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+  const grandTotal = items.reduce(
+    (sum, item) => sum + item.subtotal,
+    0
+  );
 
   const [form, setForm] = useState({
     donor_name: booking.donor_name,
@@ -70,6 +102,35 @@ export default function EditBookingForm({
     }));
   }
 
+  useEffect(() => {
+    const phone = form.phone.trim();
+
+    if (phone.length !== 10 || phone === booking.phone) {
+      setDuplicateBooking(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/tshirts/check-phone?phone=${phone}`
+        );
+
+        const data = await res.json();
+
+        if (data.exists) {
+          setDuplicateBooking(data.booking);
+        } else {
+          setDuplicateBooking(null);
+        }
+      } catch {
+        setDuplicateBooking(null);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [form.phone, booking.phone]);
+
   async function saveBooking() {
     try {
       setLoading(true);
@@ -82,7 +143,10 @@ export default function EditBookingForm({
             "Content-Type":
               "application/json",
           },
-          body: JSON.stringify(form),
+          body: JSON.stringify({
+            ...form,
+            items,
+          }),
         }
       );
 
@@ -151,6 +215,22 @@ export default function EditBookingForm({
               }
               className="w-full rounded-xl border p-3"
             />
+
+            {duplicateBooking && (
+              <div className="mt-2 rounded-xl border border-yellow-300 bg-yellow-50 p-3 text-sm">
+                <p className="font-semibold text-yellow-800">
+                  This phone number is already used.
+                </p>
+
+                <p className="mt-1 text-yellow-700">
+                  Booking ID: <strong>{duplicateBooking.booking_id}</strong>
+                </p>
+
+                <p className="text-yellow-700">
+                  Name: <strong>{duplicateBooking.donor_name}</strong>
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
@@ -252,35 +332,162 @@ export default function EditBookingForm({
         </h2>
 
         <div className="space-y-3">
-          {booking.items.map((item) => (
+          {items.map((item, index) => (
             <div
-              key={item.id}
+              key={item.id || index}
               className="flex items-center justify-between rounded-xl border p-4"
             >
               <div>
-                <p className="font-bold">
-                  {item.tshirt_size}
-                </p>
+                <select
+                  value={item.tshirt_size}
+                  onChange={(e) =>
+                    setItems((prev) =>
+                      prev.map((iElem, i) =>
+                        i === index
+                          ? {
+                              ...iElem,
+                              tshirt_size: e.target.value,
+                            }
+                          : iElem
+                      )
+                    )
+                  }
+                  className="rounded-lg border px-3 py-2 font-semibold"
+                >
+                  {tshirtSizes.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
 
-                <p className="text-sm text-gray-500">
-                  Qty : {item.quantity}
-                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setItems((prev) =>
+                        prev.map((iElem, i) =>
+                          i === index
+                            ? {
+                                ...iElem,
+                                quantity: Math.max(1, iElem.quantity - 1),
+                                subtotal: Math.max(1, iElem.quantity - 1) * iElem.price,
+                              }
+                            : iElem
+                        )
+                      )
+                    }
+                    className="h-8 w-8 rounded-lg border"
+                  >
+                    -
+                  </button>
+
+                  <span className="w-8 text-center font-bold">
+                    {item.quantity}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setItems((prev) =>
+                        prev.map((iElem, i) =>
+                          i === index
+                            ? {
+                                ...iElem,
+                                quantity: iElem.quantity + 1,
+                                subtotal: (iElem.quantity + 1) * iElem.price,
+                              }
+                            : iElem
+                        )
+                      )
+                    }
+                    className="h-8 w-8 rounded-lg border"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setItems((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    )
+                  }
+                  disabled={items.length === 1}
+                  className="mt-3 text-sm font-semibold text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Remove
+                </button>
               </div>
 
-              <p className="font-bold text-green-600">
-                ₹{item.price}
-              </p>
+              <div className="text-right">
+                <p className="text-sm text-gray-500">
+                  ₹{item.price} × {item.quantity}
+                </p>
+
+                <p className="text-lg font-bold text-green-600">
+                  ₹{item.subtotal.toLocaleString("en-IN")}
+                </p>
+              </div>
             </div>
           ))}
+
+          <button
+            type="button"
+            onClick={() =>
+              setItems((prev) => [
+                ...prev,
+                {
+                  id: "",
+                  tshirt_size: "M",
+                  quantity: 1,
+                  price: defaultPrice,
+                  subtotal: defaultPrice,
+                },
+              ])
+            }
+            className="w-full rounded-xl border-2 border-dashed border-orange-300 py-3 font-semibold text-orange-600 transition hover:bg-orange-50"
+          >
+            + Add Another T-Shirt
+          </button>
         </div>
       </div>
+
+      <div className="rounded-2xl border bg-orange-50 p-6 shadow">
+        <h2 className="mb-4 text-xl font-bold text-orange-600">
+          Order Summary
+        </h2>
+
+        <div className="space-y-3">
+          <div className="flex justify-between border-b pb-2">
+            <span>Total Quantity</span>
+            <span className="font-bold">{totalQty}</span>
+          </div>
+
+          <div className="flex justify-between text-lg font-bold">
+            <span>Grand Total</span>
+            <span className="text-green-600">
+              ₹{grandTotal.toLocaleString("en-IN")}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {duplicateBooking && (
+        <div className="rounded-xl border border-red-300 bg-red-50 p-4">
+          <p className="font-semibold text-red-700">
+            Please resolve the duplicate phone number before saving this booking.
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3 sm:flex-row">
 
         <button
           onClick={saveBooking}
-          disabled={loading}
-          className="rounded-xl bg-orange-600 px-6 py-3 font-semibold text-white hover:bg-orange-700"
+          disabled={loading || duplicateBooking !== null}
+          className="rounded-xl bg-orange-600 px-6 py-3 font-semibold text-white hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading
             ? "Saving..."

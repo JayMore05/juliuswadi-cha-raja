@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/Input";
 import { useSettingsContext } from "./provider/SettingsProvider";
 
@@ -75,10 +75,10 @@ export default function DonationCard() {
       <div className="mt-8 flex justify-end">
         <Button
           type="button"
-          loading={saving}
+          disabled={saving}
           onClick={save}
         >
-          Save Donation Settings
+          {saving ? "Saving..." : "Save Donation"} 
         </Button>
       </div>
     </div>

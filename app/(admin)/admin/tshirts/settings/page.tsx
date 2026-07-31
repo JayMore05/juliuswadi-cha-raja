@@ -1,21 +1,21 @@
-import { redirect } from "next/navigation";
-import LoginForm from "@/components/auth/LoginForm";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import SettingsForm from "@/components/admin/tshirts/SettingsForm";
 
-export default async function LoginPage() {
-  const supabase = await createSupabaseServerClient();
+export const dynamic = "force-dynamic";
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    redirect("/admin/dashboard");
-  }
-
+export default function TshirtSettingsPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 via-white to-yellow-50 px-6">
-      <LoginForm />
-    </main>
+    <div className="mx-auto w-full max-w-3xl space-y-6 p-4 sm:p-6">
+      <div>
+        <h1 className="text-3xl font-bold text-orange-600">
+          ⚙️ T-Shirt Booking Settings
+        </h1>
+
+        <p className="mt-2 text-sm text-gray-600">
+          Control whether new T-shirt bookings can be accepted.
+        </p>
+      </div>
+
+      <SettingsForm />
+    </div>
   );
 }

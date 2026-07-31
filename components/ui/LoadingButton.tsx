@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "./Button";
+import { Button } from "./button";
 
 interface Props {
   loading: boolean;
@@ -15,8 +15,8 @@ export default function LoadingButton({
   ...props
 }: Props) {
   return (
-    <Button loading={loading} {...props}>
-      {children}
+    <Button disabled={loading} {...props}>
+      {loading ? "Loading..." : children}
     </Button>
   );
 }
