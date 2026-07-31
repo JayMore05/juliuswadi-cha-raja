@@ -1,21 +1,9 @@
-import { redirect } from "next/navigation";
-import LoginForm from "@/components/auth/LoginForm";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import ReportsDashboard from "@/components/admin/tshirts/ReportsDashboard";
 
-export default async function LoginPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    redirect("/admin/dashboard");
-  }
-
+export default function ReportsPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 via-white to-yellow-50 px-6">
-      <LoginForm />
-    </main>
+    <div className="space-y-6">
+      <ReportsDashboard />
+    </div>
   );
 }

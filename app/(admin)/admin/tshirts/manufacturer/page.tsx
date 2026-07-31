@@ -122,31 +122,32 @@ export default function ManufacturerReport() {
     if (!reportRef.current) return;
 
     const canvas = await html2canvas(reportRef.current, {
-      scale: 2,
+      scale: 3,
       useCORS: true,
       backgroundColor: "#ffffff",
+      logging: false,
     });
-
-    const imgData = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF("p", "mm", "a4");
 
     const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const pageHeight = (canvas.height * pageWidth) / canvas.width;
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
     pdf.addImage(
-      imgData,
+      canvas.toDataURL("image/png"),
       "PNG",
       0,
       0,
-      pageWidth,
-      pageHeight
+      imgWidth,
+      Math.min(imgHeight, pageHeight)
     );
 
-    const date = new Date().toISOString().split("T")[0];
-
-    pdf.save(`Manufacturer_Report_${date}.pdf`);
+    pdf.save(
+      `Manufacturer_Report_${new Date().toISOString().split("T")[0]}.pdf`
+    );
   }
 
   if (loading) {
@@ -158,7 +159,7 @@ export default function ManufacturerReport() {
   }
 
   return (
-    <div ref={reportRef} className="space-y-6">
+    <div className="space-y-6">
       <style jsx global>{`
         @media print {
           body {
@@ -181,33 +182,6 @@ export default function ManufacturerReport() {
         }
       `}</style>
 
-      {/* Printable Report Header */}
-      <div className="hidden print:block border-b-2 border-orange-600 pb-4">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/logo/logo.png"
-            alt="Mandal Logo"
-            width={80}
-            height={80}
-            priority
-          />
-
-          <div>
-            <h1 className="text-3xl font-bold">
-              Juliuswadi Cha Raja
-            </h1>
-
-            <p className="text-lg font-semibold text-orange-700">
-              Official Merchandise Manufacturer Report
-            </p>
-
-            <p className="text-sm text-gray-600">
-              Generated on: {reportDate}
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Action Buttons */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div>
@@ -227,7 +201,10 @@ export default function ManufacturerReport() {
           </button>
 
           <button
-            onClick={exportPDF}
+            onClick={() => {
+              alert("PDF button clicked");
+              exportPDF();
+            }}
             className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
           >
             <FileText size={18} />
@@ -244,89 +221,123 @@ export default function ManufacturerReport() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-gray-500">Total Bookings</p>
-          <p className="mt-2 text-3xl font-bold text-orange-600">
-            {data?.totalBookings}
-          </p>
-        </div>
+      <div
+        ref={reportRef}
+        className="rounded-2xl bg-white p-6"
+      >
+        <div className="space-y-6">
+          {/* Printable Report Header */}
+          <div className="hidden print:block border-b-2 border-orange-600 pb-4">
+            <div className="flex items-center gap-4">
+              <Image
+                src="/logo/logo.png"
+                alt="Mandal Logo"
+                width={80}
+                height={80}
+                priority
+              />
 
-        <div className="rounded-2xl border bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-gray-500">Total T-Shirts Required</p>
-          <p className="mt-2 text-3xl font-bold text-green-600">
-            {data?.totalTshirts}
-          </p>
-        </div>
-      </div>
+              <div>
+                <h1 className="text-3xl font-bold">
+                  Juliuswadi Cha Raja
+                </h1>
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-        <table className="w-full border-collapse text-left">
-          <thead className="bg-orange-100 text-orange-900">
-            <tr>
-              <th className="px-6 py-4 text-center">
-                Sr.
-              </th>
+                <p className="text-lg font-semibold text-orange-700">
+                  Official Merchandise Manufacturer Report
+                </p>
 
-              <th className="px-6 py-4 text-left">
-                Size
-              </th>
+                <p className="text-sm text-gray-600">
+                  Generated on: {reportDate}
+                </p>
+              </div>
+            </div>
+          </div>
 
-              <th className="px-6 py-4 text-right">
-                Quantity
-              </th>
-            </tr>
-          </thead>
+          {/* Stats Cards */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              <p className="text-sm font-medium text-gray-500">Total Bookings</p>
+              <p className="mt-2 text-3xl font-bold text-orange-600">
+                {data?.totalBookings}
+              </p>
+            </div>
 
-          <tbody className="divide-y divide-gray-100">
-            {data?.summary.map((row, index) => (
-              <tr
-                key={row.value}
-                className="border-t"
-              >
-                <td className="px-6 py-4 text-center">
-                  {index + 1}
-                </td>
-
-                <td className="px-6 py-4 font-semibold">
-                  {row.size}
-                </td>
-
-                <td className="px-6 py-4 text-right text-lg font-bold">
-                  {row.quantity}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-
-          <tfoot className="bg-orange-600 text-white">
-            <tr>
-              <td colSpan={2} className="px-6 py-4 text-lg font-bold">
-                TOTAL
-              </td>
-
-              <td className="px-6 py-4 text-right text-2xl font-extrabold">
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              <p className="text-sm font-medium text-gray-500">Total T-Shirts Required</p>
+              <p className="mt-2 text-3xl font-bold text-green-600">
                 {data?.totalTshirts}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+              </p>
+            </div>
+          </div>
 
-      {/* Footer */}
-      <div className="hidden print:flex mt-10 justify-between text-sm text-gray-600">
-        <div>
-          Prepared By:
-          <br />
-          Juliuswadi Cha Raja Admin
-        </div>
+          {/* Table */}
+          <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+            <table className="w-full border-collapse text-left">
+              <thead className="bg-orange-100 text-orange-900">
+                <tr>
+                  <th className="px-6 py-4 text-center">
+                    Sr.
+                  </th>
 
-        <div className="text-right">
-          Generated via
-          <br />
-          Merchandise Management System
+                  <th className="px-6 py-4 text-left">
+                    Size
+                  </th>
+
+                  <th className="px-6 py-4 text-right">
+                    Quantity
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-100">
+                {data?.summary.map((row, index) => (
+                  <tr
+                    key={row.value}
+                    className="border-t"
+                  >
+                    <td className="px-6 py-4 text-center">
+                      {index + 1}
+                    </td>
+
+                    <td className="px-6 py-4 font-semibold">
+                      {row.size}
+                    </td>
+
+                    <td className="px-6 py-4 text-right text-lg font-bold">
+                      {row.quantity}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+              <tfoot className="bg-orange-600 text-white">
+                <tr>
+                  <td colSpan={2} className="px-6 py-4 text-lg font-bold">
+                    TOTAL
+                  </td>
+
+                  <td className="px-6 py-4 text-right text-2xl font-extrabold">
+                    {data?.totalTshirts}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          {/* Footer */}
+          <div className="hidden print:flex mt-10 justify-between text-sm text-gray-600">
+            <div>
+              Prepared By:
+              <br />
+              Juliuswadi Cha Raja Admin
+            </div>
+
+            <div className="text-right">
+              Generated via
+              <br />
+              Merchandise Management System
+            </div>
+          </div>
         </div>
       </div>
     </div>

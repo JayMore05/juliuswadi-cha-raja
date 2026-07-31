@@ -44,7 +44,8 @@ export default function NavLogo() {
         "
       >
         <Image
-          src={settings?.logo || "/logo/logo.png"}
+          
+  		src={settings?.logo || "/logo/logo.png"}
           alt="Juliuswadi Cha Raja"
           fill
           priority

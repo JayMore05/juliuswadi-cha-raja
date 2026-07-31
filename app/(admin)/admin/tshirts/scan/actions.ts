@@ -26,7 +26,8 @@ export async function markAsDelivered(bookingId: string) {
   }
 
   revalidatePath("/admin/tshirts");
+  revalidatePath("/admin/tshirts/distribution");
   revalidatePath(`/admin/tshirts/scan/${bookingId}`);
 
-  redirect("/admin/tshirts/scan?success=1");
+  redirect("/admin/tshirts/distribution?success=1");
 }

@@ -58,6 +58,7 @@ export default function EditBookingForm({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [duplicateBooking, setDuplicateBooking] = useState<{
     booking_id: string;
     donor_name: string;
@@ -157,11 +158,11 @@ export default function EditBookingForm({
         return;
       }
 
-      alert("Booking Updated");
-
-      router.push("/admin/tshirts");
-
-      router.refresh();
+      setSuccess(true);
+      setTimeout(() => {
+        router.push("/admin/tshirts");
+        router.refresh();
+      }, 1500);
     } catch {
       alert("Something went wrong.");
     } finally {
@@ -478,6 +479,18 @@ export default function EditBookingForm({
         <div className="rounded-xl border border-red-300 bg-red-50 p-4">
           <p className="font-semibold text-red-700">
             Please resolve the duplicate phone number before saving this booking.
+          </p>
+        </div>
+      )}
+
+      {success && (
+        <div className="rounded-2xl border border-green-300 bg-green-50 p-4">
+          <h3 className="font-semibold text-green-700">
+            ✅ Booking Updated Successfully
+          </h3>
+
+          <p className="mt-1 text-sm text-green-600">
+            Redirecting to Booking List...
           </p>
         </div>
       )}

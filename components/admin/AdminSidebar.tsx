@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { X } from "lucide-react";
+import { X, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 import { adminMenu } from "@/lib/admin-menu";
 
 interface Props {
-  open: boolean;
+  open: boolean;  
   onClose: () => void;
 }
 
@@ -13,6 +15,23 @@ export default function AdminSidebar({
   open,
   onClose,
 }: Props) {
+  const router = useRouter();
+
+  async function handleLogout() {
+    const confirmLogout = confirm(
+      "Are you sure you want to logout?"
+    );
+
+    if (!confirmLogout) return;
+
+    await supabase.auth.signOut();
+
+    onClose();
+
+    router.replace("/admin/login");
+    router.refresh();
+  }
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -71,6 +90,14 @@ md:sticky md:top-0 md:translate-x-0
               </Link>
             );
           })}
+
+          <button
+            onClick={handleLogout}
+            className="mt-6 flex w-full items-center gap-3 rounded-xl border border-red-500 px-4 py-3 text-left text-red-300 transition hover:bg-red-600 hover:text-white"
+          >
+            <LogOut size={20} />
+            Logout
+          </button>
 
         </nav>
 

@@ -29,9 +29,9 @@ export default function AdminHeader({
   return (
     <header className="sticky top-0 z-40 border-b bg-white/90 backdrop-blur print:hidden">
 
-      <div className="flex h-16 items-center justify-between px-6">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
 
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-3">
 
           <button
             onClick={onMenuClick}
@@ -40,24 +40,17 @@ export default function AdminHeader({
             <Menu size={20} />
           </button>
 
-          <div>
-            <h1 className="text-lg font-bold text-orange-600">
+          <div className="min-w-0">
+            <h1 className="truncate text-base font-bold text-orange-600 sm:text-lg">
               Juliuswadi Cha Raja
             </h1>
 
-            <p className="text-xs text-gray-500">
+            <p className="hidden text-xs text-gray-500 sm:block">
               Admin Dashboard
             </p>
           </div>
 
         </div>
-
-        <button
-          onClick={handleLogout}
-          className="rounded-xl bg-orange-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-700"
-        >
-          Logout
-        </button>
 
       </div>
 

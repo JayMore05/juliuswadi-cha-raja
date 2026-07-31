@@ -9,7 +9,10 @@ export default function ReceiptCard({ receipt }: Props) {
 
   const payments = receipt.donation_payments ?? [];
 
-  const latestPayment = payments[payments.length - 1];
+  const latestPayment =
+    payments.length > 0
+      ? payments[payments.length - 1]
+      : null;
 
   const totalPaid = payments.reduce(
     (sum: number, p: any) => sum + Number(p.amount),
@@ -53,7 +56,11 @@ export default function ReceiptCard({ receipt }: Props) {
         <span>₹{receipt.promised_amount}</span>
 
         <strong>Latest Payment</strong>
-        <span>₹{latestPayment.amount}</span>
+        <span>
+          {latestPayment
+            ? `₹${latestPayment.amount}`
+            : "No payment yet"}
+        </span>
 
         <strong>Total Paid</strong>
         <span className="font-bold text-green-600">
@@ -66,23 +73,27 @@ export default function ReceiptCard({ receipt }: Props) {
         </span>
 
         <strong>Payment Mode</strong>
-        <span>{latestPayment.payment_mode}</span>
+        <span>{latestPayment?.payment_mode ?? "-"}</span>
 
         <strong>Status</strong>
         <span>{receipt.status}</span>
 
         <strong>Date</strong>
         <span>
-          {new Date(
-            latestPayment.payment_date
-          ).toLocaleDateString("en-IN")}
+          {latestPayment
+            ? new Date(
+                latestPayment.payment_date
+              ).toLocaleDateString("en-IN")
+            : "-"}
         </span>
 
         <strong>Time</strong>
         <span>
-          {new Date(
-            latestPayment.payment_date
-          ).toLocaleTimeString("en-IN")}
+          {latestPayment
+            ? new Date(
+                latestPayment.payment_date
+              ).toLocaleTimeString("en-IN")
+            : "-"}
         </span>
 
       </div>

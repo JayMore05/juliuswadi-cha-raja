@@ -274,7 +274,7 @@ export default function ReceiptCard({
               T-Shirt Details
             </h3>
 
-            <div className="overflow-x-auto rounded-xl border print:overflow-visible">
+            <div className="hidden overflow-x-auto rounded-xl border md:block print:block print:overflow-visible">
               <table className="min-w-[500px] w-full text-sm">
                 <thead className="bg-orange-100">
                   <tr>
@@ -325,6 +325,41 @@ export default function ReceiptCard({
                   )}
                 </tbody>
               </table>
+            </div>
+
+            <div className="space-y-3 md:hidden print:hidden">
+              {booking.items?.map((item: BookingItem) => (
+                <div
+                  key={item.id}
+                  className="rounded-xl border bg-white p-4 shadow-sm"
+                >
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <span className="font-semibold text-orange-600">
+                      Size: {item.tshirt_size}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      Qty: {item.quantity}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 flex items-center justify-between text-sm">
+                    <span className="text-gray-500">
+                      {Number(item.price).toLocaleString("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                      })}{" "}
+                      × {item.quantity}
+                    </span>
+
+                    <span className="font-bold text-green-600">
+                      {Number(item.subtotal).toLocaleString("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                      })}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -516,30 +551,31 @@ export default function ReceiptCard({
 
               const items = booking.items
                 .map(
-                  (item) => `• ${item.tshirt_size} × ${item.quantity}`
+                  (item) => `\n• ${item.tshirt_size} × ${item.quantity}`
                 )
-                .join("\n");
+                .join("");
 
               const message = `🛕 *Juliuswadi Cha Raja*
 
-🙏 Hello ${booking.donor_name},
+🙏 Hello *${booking.donor_name}*,
 
-Your Merchandise Booking is Confirmed.
+Your T-Shirt booking has been confirmed successfully.
 
 ━━━━━━━━━━━━━━━━━━
 
-🎟 Booking ID: ${booking.booking_id}
+🎟 *Booking ID*: ${booking.booking_id}
 
-👕 Items:
-${items}
+🧾 *Receipt No.*: ${booking.donation_receipt_no || "-"}
 
-📦 Total Quantity: ${totalQty}
+👕 *Items*${items}
 
-💰 Amount: ₹${booking.total_amount}
+📦 *Total Quantity*: ${totalQty}
 
-Please carry this receipt while collecting your T-Shirt.
+💰 *Amount Paid*: ₹${booking.total_amount}
 
-Ganpati Bappa Morya 🙏`;
+⚠️ Please keep this receipt safe and show the QR code while collecting your T-Shirt.
+
+🙏 Ganpati Bappa Morya!`;
 
               const isMobile = /Android|iPhone|iPad|iPod/i.test(
                 navigator.userAgent
