@@ -1,14 +1,17 @@
 import { z } from "zod";
 
 export const tshirtSizes = [
+  "26",
+  "28",
+  "30",
+  "32",
   "XS",
   "S",
   "M",
   "L",
   "XL",
   "XXL",
-  "3XL",
-  
+  "XXXL",
 ] as const;
 
 export const paymentModes = [
@@ -35,7 +38,28 @@ export const bookingStatuses = [
 =========================================================== */
 
 export const bookingItemSchema = z.object({
-  tshirt_size: z.enum(tshirtSizes),
+  tshirt_size: z
+    .string()
+    .refine(
+      (value) =>
+        [
+          "26",
+          "28",
+          "30",
+          "32",
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "XXL",
+          "XXXL",
+        ].includes(value) ||
+        /^\d{2}$/.test(value),
+      {
+        message: "Invalid T-Shirt size.",
+      }
+    ),
 
   quantity: z
     .number()

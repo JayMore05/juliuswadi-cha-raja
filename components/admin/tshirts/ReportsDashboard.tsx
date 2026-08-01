@@ -525,31 +525,84 @@ export default function ReportsDashboard() {
                   👕 Size-wise T-Shirt Summary
                 </h2>
 
-                {["XS","S","M","L","XL","XXL","XXXL"].map((size) => {
-                  const qty = filteredBookings.reduce((sum, booking) => {
-                    return (
-                      sum +
-                      booking.items
-                        .filter((i) => i.tshirt_size === size)
-                        .reduce((a, b) => a + Number(b.quantity), 0)
-                    );
-                  }, 0);
+                {(() => {
+                  const standardSizes = [
+                    { value: "26", label: "Child (26)" },
+                    { value: "28", label: "Child (28)" },
+                    { value: "30", label: "Child (30)" },
+                    { value: "32", label: "Child (32)" },
 
-                  return (
-                    <div
-                      key={size}
-                      className="mb-3 flex items-center justify-between rounded-xl border p-3"
-                    >
-                      <span className="font-semibold">
-                        {size}
-                      </span>
+                    { value: "XS", label: "XS (34)" },
+                    { value: "S", label: "S (36)" },
+                    { value: "M", label: "M (38)" },
+                    { value: "L", label: "L (40)" },
+                    { value: "XL", label: "XL (42)" },
+                    { value: "XXL", label: "XXL (44)" },
+                    { value: "XXXL", label: "XXXL (46)" },
+                  ];
 
-                      <span className="rounded-lg bg-orange-100 px-3 py-1 font-bold text-orange-700">
-                        {qty}
-                      </span>
-                    </div>
+                  const standardValues = new Set(
+                    standardSizes.map((size) => size.value)
                   );
-                })}
+
+                  const customSizes = Array.from(
+                    new Set(
+                      filteredBookings.flatMap((booking) =>
+                        booking.items
+                          .map((item) => item.tshirt_size)
+                          .filter(
+                            (size) =>
+                              /^\d{2}$/.test(size) &&
+                              !standardValues.has(size)
+                          )
+                      )
+                    )
+                  ).sort((a, b) => Number(a) - Number(b));
+
+                  const allSizes = [
+                    ...standardSizes,
+                    ...customSizes.map((size) => ({
+                      value: size,
+                      label: `Custom (${size})`,
+                    })),
+                  ];
+
+                  return allSizes.map((size) => {
+                    const qty = filteredBookings.reduce(
+                      (sum, booking) => {
+                        return (
+                          sum +
+                          booking.items
+                            .filter(
+                              (item) =>
+                                item.tshirt_size === size.value
+                            )
+                            .reduce(
+                              (a, b) =>
+                                a + Number(b.quantity),
+                              0
+                            )
+                        );
+                      },
+                      0
+                    );
+
+                    return (
+                      <div
+                        key={size.value}
+                        className="mb-3 flex items-center justify-between rounded-xl border p-3"
+                      >
+                        <span className="font-semibold">
+                          {size.label}
+                        </span>
+
+                        <span className="rounded-lg bg-orange-100 px-3 py-1 font-bold text-orange-700">
+                          {qty}
+                        </span>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
 
               <div className={cardStyle}>

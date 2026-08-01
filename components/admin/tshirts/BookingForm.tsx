@@ -29,6 +29,7 @@ export default function BookingForm() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [customSizes, setCustomSizes] = useState<Record<number, string>>({});
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -94,12 +95,36 @@ export default function BookingForm() {
     try {
       setLoading(true);
 
+      const finalItems = data.items.map((item, index) => {
+        if (item.tshirt_size !== "CUSTOM") {
+          return item;
+        }
+
+        const customSize = customSizes[index]?.trim() ?? "";
+
+        if (!/^\d{2}$/.test(customSize)) {
+          throw new Error(
+            `Please enter a valid 2-digit custom size for T-Shirt ${index + 1}.`
+          );
+        }
+
+        return {
+          ...item,
+          tshirt_size: customSize,
+        };
+      });
+
+      const finalData = {
+        ...data,
+        items: finalItems,
+      };
+
       const res = await fetch("/api/tshirts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(finalData),
       });
 
       const result = await res.json();
@@ -120,8 +145,12 @@ export default function BookingForm() {
       );
       router.refresh();
       
-    } catch {
-      toast.error("Something went wrong.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong."
+      );
     } finally {
       setLoading(false);
     }
@@ -325,16 +354,67 @@ export default function BookingForm() {
 
                   <select
                     {...register(`items.${index}.tshirt_size`)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      setValue(
+                        `items.${index}.tshirt_size`,
+                        value
+                      );
+
+                      if (value !== "CUSTOM") {
+                        setCustomSizes((prev) => {
+                          const next = { ...prev };
+                          delete next[index];
+                          return next;
+                        });
+                      }
+                    }}
                     className="w-full rounded-xl border p-3"
                   >
+                    <option value="26">Child (26)</option>
+                    <option value="28">Child (28)</option>
+                    <option value="30">Child (30)</option>
+                    <option value="32">Child (32)</option>
                     <option value="XS">XS (34)</option>
                     <option value="S">S (36)</option>
                     <option value="M">M (38)</option>
                     <option value="L">L (40)</option>
                     <option value="XL">XL (42)</option>
                     <option value="XXL">XXL (44)</option>
-                    <option value="3XL">XXXL (46)</option>
+                    <option value="XXXL">XXXL (46)</option>
+                    <option value="CUSTOM">Custom Size</option>
                   </select>
+                  {items[index]?.tshirt_size === "CUSTOM" && (
+                    <div className="mt-3">
+                      <label className="mb-1 block text-xs font-semibold text-orange-700">
+                        Enter Custom Size
+                      </label>
+
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={2}
+                        value={customSizes[index] ?? ""}
+                        placeholder="e.g. 48"
+                        onChange={(e) => {
+                          const value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 2);
+
+                          setCustomSizes((prev) => ({
+                            ...prev,
+                            [index]: value,
+                          }));
+                        }}
+                        className="w-full rounded-xl border border-orange-300 bg-white p-3 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+                      />
+
+                      <p className="mt-1 text-xs text-gray-500">
+                        Enter a 2-digit size only.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* QUANTITY */}

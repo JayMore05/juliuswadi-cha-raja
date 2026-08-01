@@ -488,6 +488,10 @@ export default function ReceiptCard({
                   Size Chart
                 </h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>Child (26)</div>
+                  <div>Child (28)</div>
+                  <div>Child (30)</div>
+                  <div>Child (32)</div>
                   <div>XS (34)</div>
                   <div>S (36)</div>
                   <div>M (38)</div>

@@ -1,11 +1,4 @@
-export type TshirtSize =
-  | "XS"
-  | "S"
-  | "M"
-  | "L"
-  | "XL"
-  | "XXL"
-  | "3XL";
+export type TshirtSize = string;
 
 export type PaymentMode =
   | "Cash"
@@ -132,21 +125,7 @@ export interface BookingYear {
 }
 
 export interface ManufacturerSummary {
-  XS: number;
-
-  S: number;
-
-  M: number;
-
-  L: number;
-
-  XL: number;
-
-  XXL: number;
-
-  "3XL": number;
-
-  total: number;
+  [size: string]: number;
 }
 
 export interface DashboardStats {
@@ -164,13 +143,5 @@ export interface DashboardStats {
   totalPieces: number;
   totalAmount: number;
 
-  sizeWiseCount: {
-    XS: number;
-    S: number;
-    M: number;
-    L: number;
-    XL: number;
-    XXL: number;
-    "3XL": number;
-  };
+  sizeWiseCount: Record<string, number>;
 }

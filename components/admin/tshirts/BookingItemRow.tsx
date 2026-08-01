@@ -1,15 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { Trash2, Plus, Minus } from "lucide-react";
 
 const SIZES = [
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  "3XL",
+  { value: "26", label: "Child (26)" },
+  { value: "28", label: "Child (28)" },
+  { value: "30", label: "Child (30)" },
+  { value: "32", label: "Child (32)" },
+
+  { value: "XS", label: "XS (34)" },
+  { value: "S", label: "S (36)" },
+  { value: "M", label: "M (38)" },
+  { value: "L", label: "L (40)" },
+  { value: "XL", label: "XL (42)" },
+  { value: "XXL", label: "XXL (44)" },
+  { value: "XXXL", label: "XXXL (46)" },
+
+  { value: "CUSTOM", label: "Custom Size" },
 ];
 
 interface Props {
@@ -35,6 +43,8 @@ export default function BookingItemRow({
   update,
   remove,
 }: Props) {
+  const [customSize, setCustomSize] = useState("");
+
   const subtotal =
     item.quantity * item.price;
 
@@ -80,13 +90,37 @@ export default function BookingItemRow({
           >
             {SIZES.map((size) => (
               <option
-                key={size}
-                value={size}
+                key={size.value}
+                value={size.value}
               >
-                {size}
+                {size.label}
               </option>
             ))}
           </select>
+
+          {item.tshirt_size === "CUSTOM" && (
+            <div className="mt-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={2}
+                value={customSize}
+                placeholder="Enter 2-digit size"
+                onChange={(e) => {
+                  const value = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 2);
+
+                  setCustomSize(value);
+                }}
+                className="w-full rounded-xl border border-orange-300 p-3 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              />
+
+              <p className="mt-1 text-xs text-gray-500">
+                Enter a 2-digit custom size only.
+              </p>
+            </div>
+          )}
 
         </div>
 

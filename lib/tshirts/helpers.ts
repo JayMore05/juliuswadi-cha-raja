@@ -64,19 +64,32 @@ export function getManufacturerSummary(
   items: BookingItem[]
 ): ManufacturerSummary {
   const summary: ManufacturerSummary = {
+    "26": 0,
+    "28": 0,
+    "30": 0,
+    "32": 0,
+
     XS: 0,
     S: 0,
     M: 0,
     L: 0,
     XL: 0,
     XXL: 0,
-    "3XL": 0,
+    XXXL: 0,
+
     total: 0,
   };
 
   items.forEach((item) => {
-    summary[item.tshirt_size] += item.quantity;
-    summary.total += item.quantity;
+    const size = item.tshirt_size;
+    const quantity = Number(item.quantity) || 0;
+
+    if (summary[size] === undefined) {
+      summary[size] = 0;
+    }
+
+    summary[size] += quantity;
+    summary.total += quantity;
   });
 
   return summary;

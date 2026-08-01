@@ -43,13 +43,20 @@ const paymentModes = [
 ];
 
 const tshirtSizes = [
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  "XXXL",
+  { value: "26", label: "Child (26)" },
+  { value: "28", label: "Child (28)" },
+  { value: "30", label: "Child (30)" },
+  { value: "32", label: "Child (32)" },
+
+  { value: "XS", label: "XS (34)" },
+  { value: "S", label: "S (36)" },
+  { value: "M", label: "M (38)" },
+  { value: "L", label: "L (40)" },
+  { value: "XL", label: "XL (42)" },
+  { value: "XXL", label: "XXL (44)" },
+  { value: "XXXL", label: "XXXL (46)" },
+
+  { value: "CUSTOM", label: "Custom Size" },
 ];
 
 export default function EditBookingForm({
@@ -58,6 +65,7 @@ export default function EditBookingForm({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [customSizes, setCustomSizes] = useState<Record<number, string>>({});
   const [success, setSuccess] = useState(false);
   const [duplicateBooking, setDuplicateBooking] = useState<{
     booking_id: string;
@@ -136,6 +144,27 @@ export default function EditBookingForm({
     try {
       setLoading(true);
 
+      const finalItems = items.map((item, index) => {
+        if (item.tshirt_size !== "CUSTOM") {
+          return item;
+        }
+
+        const customSize = customSizes[index]?.trim() ?? "";
+
+        if (!/^\d{2}$/.test(customSize)) {
+          alert(
+            `Please enter a valid 2-digit custom size for T-Shirt ${index + 1}.`
+          );
+
+          throw new Error("Invalid custom T-Shirt size");
+        }
+
+        return {
+          ...item,
+          tshirt_size: customSize,
+        };
+      });
+
       const res = await fetch(
         `/api/tshirts/${booking.id}`,
         {
@@ -146,7 +175,7 @@ export default function EditBookingForm({
           },
           body: JSON.stringify({
             ...form,
-            items,
+            items: finalItems,
           }),
         }
       );
@@ -163,8 +192,11 @@ export default function EditBookingForm({
         router.push("/admin/tshirts");
         router.refresh();
       }, 1500);
-    } catch {
-      alert("Something went wrong.");
+    } catch (error) {
+      // Avoid a double alert if it's our custom size validation error
+      if (error instanceof Error && error.message !== "Invalid custom T-Shirt size") {
+        alert("Something went wrong.");
+      }
     } finally {
       setLoading(false);
     }
@@ -341,26 +373,72 @@ export default function EditBookingForm({
               <div>
                 <select
                   value={item.tshirt_size}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = e.target.value;
+
                     setItems((prev) =>
                       prev.map((iElem, i) =>
                         i === index
                           ? {
                               ...iElem,
-                              tshirt_size: e.target.value,
+                              tshirt_size: value,
                             }
                           : iElem
                       )
-                    )
-                  }
+                    );
+
+                    if (value !== "CUSTOM") {
+                      setCustomSizes((prev) => {
+                        const next = { ...prev };
+                        delete next[index];
+                        return next;
+                      });
+                    }
+                  }}
                   className="rounded-lg border px-3 py-2 font-semibold"
                 >
+                  {!/^(26|28|30|32)$/.test(item.tshirt_size) &&
+                    !["XS", "S", "M", "L", "XL", "XXL", "XXXL", "CUSTOM"].includes(
+                      item.tshirt_size
+                    ) &&
+                    /^\d{2}$/.test(item.tshirt_size) && (
+                      <option value={item.tshirt_size}>
+                        Custom ({item.tshirt_size})
+                      </option>
+                    )}
                   {tshirtSizes.map((size) => (
-                    <option key={size} value={size}>
-                      {size}
+                    <option key={size.value} value={size.value}>
+                      {size.label}
                     </option>
                   ))}
                 </select>
+
+                {item.tshirt_size === "CUSTOM" && (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={2}
+                      value={customSizes[index] ?? ""}
+                      placeholder="Enter 2-digit size"
+                      onChange={(e) => {
+                        const value = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 2);
+
+                        setCustomSizes((prev) => ({
+                          ...prev,
+                          [index]: value,
+                        }));
+                      }}
+                      className="w-full rounded-lg border border-orange-300 px-3 py-2 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                    />
+
+                    <p className="mt-1 text-xs text-gray-500">
+                      Enter a 2-digit custom size only.
+                    </p>
+                  </div>
+                )}
 
                 <div className="mt-2 flex items-center gap-2">
                   <button

@@ -7,6 +7,11 @@ const supabase = createClient(
 );
 
 const SIZE_ORDER = [
+  { value: "26", label: "Child (26)" },
+  { value: "28", label: "Child (28)" },
+  { value: "30", label: "Child (30)" },
+  { value: "32", label: "Child (32)" },
+  
   { value: "XS", label: "XS (34)" },
   { value: "S", label: "S (36)" },
   { value: "M", label: "M (38)" },
@@ -37,16 +42,51 @@ export async function GET() {
   let totalTshirts = 0;
 
   data.forEach((item) => {
+    const quantity = Number(item.quantity) || 0;
+
     const row = summary.find(
       (s) => s.value === item.tshirt_size
     );
 
     if (row) {
-      row.quantity += item.quantity;
+      row.quantity += quantity;
+    } else if (/^\d{2}$/.test(item.tshirt_size)) {
+      const existingCustom = summary.find(
+        (s) => s.value === item.tshirt_size
+      );
+
+      if (existingCustom) {
+        existingCustom.quantity += quantity;
+      } else {
+        summary.push({
+          size: `Custom (${item.tshirt_size})`,
+          value: item.tshirt_size,
+          quantity,
+        });
+      }
     }
 
-    totalTshirts += item.quantity;
+    totalTshirts += quantity;
   });
+
+  const standardValues = new Set(
+    SIZE_ORDER.map((size) => size.value)
+  );
+  
+  const standardSummary = summary.filter((item) =>
+    standardValues.has(item.value)
+  );
+  
+  const customSummary = summary
+    .filter((item) => !standardValues.has(item.value))
+    .sort(
+      (a, b) => Number(a.value) - Number(b.value)
+    );
+    
+  const finalSummary = [
+    ...standardSummary,
+    ...customSummary,
+  ];
 
   const { count } = await supabase
     .from("tshirt_bookings")
@@ -56,7 +96,7 @@ export async function GET() {
     });
 
   return NextResponse.json({
-    summary,
+    summary: finalSummary,
     totalBookings: count ?? 0,
     totalTshirts,
   });
