@@ -54,6 +54,7 @@ export const bookingItemSchema = z.object({
           "XL",
           "XXL",
           "XXXL",
+          "CUSTOM",
         ].includes(value) ||
         /^\d{2}$/.test(value),
       {
