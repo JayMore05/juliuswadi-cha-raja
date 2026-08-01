@@ -559,9 +559,7 @@ export default function ReceiptCard({
                 )
                 .join("");
 
-              const receiptLink =
-                `${window.location.origin}/admin/tshirts/receipt/${booking.booking_id}`;
-
+              const receiptLink = `${window.location.origin}/receipt/tshirt/${booking.booking_id}`;
               const message = `🛕 *Juliuswadi Cha Raja*
 
 🙏 Hello *${booking.donor_name}*,
