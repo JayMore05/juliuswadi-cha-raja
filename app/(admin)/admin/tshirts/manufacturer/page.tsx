@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Printer, FileSpreadsheet, FileText } from "lucide-react";
+import { Printer, FileSpreadsheet, FileText, ArrowLeft } from "lucide-react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -87,11 +88,7 @@ export default function ManufacturerReport() {
       }
     );
 
-    worksheet["!cols"] = [
-      { wch: 10 },
-      { wch: 20 },
-      { wch: 15 },
-    ];
+    worksheet["!cols"] = [{ wch: 10 }, { wch: 20 }, { wch: 15 }];
 
     const workbook = XLSX.utils.book_new();
 
@@ -112,10 +109,7 @@ export default function ManufacturerReport() {
 
     const date = new Date().toISOString().split("T")[0];
 
-    saveAs(
-      file,
-      `Manufacturer_Report_${date}.xlsx`
-    );
+    saveAs(file, `Manufacturer_Report_${date}.xlsx`);
   }
 
   async function exportPDF() {
@@ -182,6 +176,15 @@ export default function ManufacturerReport() {
         }
       `}</style>
 
+      {/* Back Button */}
+      <Link
+        href="/admin/tshirts"
+        className="inline-flex items-center gap-2 rounded-xl border border-orange-200 bg-white px-4 py-2.5 text-sm font-semibold text-orange-700 shadow-sm transition hover:bg-orange-50 print:hidden"
+      >
+        <ArrowLeft size={18} />
+        Back
+      </Link>
+
       {/* Action Buttons */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div>
@@ -221,13 +224,10 @@ export default function ManufacturerReport() {
         </div>
       </div>
 
-      <div
-        ref={reportRef}
-        className="rounded-2xl bg-white p-6"
-      >
+      <div ref={reportRef} className="rounded-2xl bg-white p-6">
         <div className="space-y-6">
           {/* Printable Report Header */}
-          <div className="hidden print:block border-b-2 border-orange-600 pb-4">
+          <div className="hidden border-b-2 border-orange-600 pb-4 print:block">
             <div className="flex items-center gap-4">
               <Image
                 src="/logo/logo.png"
@@ -238,9 +238,7 @@ export default function ManufacturerReport() {
               />
 
               <div>
-                <h1 className="text-3xl font-bold">
-                  Juliuswadi Cha Raja
-                </h1>
+                <h1 className="text-3xl font-bold">Juliuswadi Cha Raja</h1>
 
                 <p className="text-lg font-semibold text-orange-700">
                   Official Merchandise Manufacturer Report
@@ -256,14 +254,18 @@ export default function ManufacturerReport() {
           {/* Stats Cards */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <p className="text-sm font-medium text-gray-500">Total Bookings</p>
+              <p className="text-sm font-medium text-gray-500">
+                Total Bookings
+              </p>
               <p className="mt-2 text-3xl font-bold text-orange-600">
                 {data?.totalBookings}
               </p>
             </div>
 
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <p className="text-sm font-medium text-gray-500">Total T-Shirts Required</p>
+              <p className="text-sm font-medium text-gray-500">
+                Total T-Shirts Required
+              </p>
               <p className="mt-2 text-3xl font-bold text-green-600">
                 {data?.totalTshirts}
               </p>
@@ -275,34 +277,17 @@ export default function ManufacturerReport() {
             <table className="w-full border-collapse text-left">
               <thead className="bg-orange-100 text-orange-900">
                 <tr>
-                  <th className="px-6 py-4 text-center">
-                    Sr.
-                  </th>
-
-                  <th className="px-6 py-4 text-left">
-                    Size
-                  </th>
-
-                  <th className="px-6 py-4 text-right">
-                    Quantity
-                  </th>
+                  <th className="px-6 py-4 text-center">Sr.</th>
+                  <th className="px-6 py-4 text-left">Size</th>
+                  <th className="px-6 py-4 text-right">Quantity</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-gray-100">
                 {data?.summary.map((row, index) => (
-                  <tr
-                    key={row.value}
-                    className="border-t"
-                  >
-                    <td className="px-6 py-4 text-center">
-                      {index + 1}
-                    </td>
-
-                    <td className="px-6 py-4 font-semibold">
-                      {row.size}
-                    </td>
-
+                  <tr key={row.value} className="border-t">
+                    <td className="px-6 py-4 text-center">{index + 1}</td>
+                    <td className="px-6 py-4 font-semibold">{row.size}</td>
                     <td className="px-6 py-4 text-right text-lg font-bold">
                       {row.quantity}
                     </td>
@@ -315,7 +300,6 @@ export default function ManufacturerReport() {
                   <td colSpan={2} className="px-6 py-4 text-lg font-bold">
                     TOTAL
                   </td>
-
                   <td className="px-6 py-4 text-right text-2xl font-extrabold">
                     {data?.totalTshirts}
                   </td>
@@ -325,7 +309,7 @@ export default function ManufacturerReport() {
           </div>
 
           {/* Footer */}
-          <div className="hidden print:flex mt-10 justify-between text-sm text-gray-600">
+          <div className="mt-10 hidden justify-between text-sm text-gray-600 print:flex">
             <div>
               Prepared By:
               <br />

@@ -1,6 +1,7 @@
 import DistributionClient from "@/components/admin/tshirts/DistributionClient";
-import { PackageCheck } from "lucide-react";
+import { PackageCheck, ArrowLeft } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export default async function DistributionPage() {
   const supabase = await createSupabaseServerClient();
@@ -31,8 +32,17 @@ export default async function DistributionPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8">
-      {/* Header */}
+      <div className="mb-6">
+        <Link
+          href="/admin/tshirts"
+          className="inline-flex items-center gap-2 rounded-xl border border-orange-200 bg-white px-4 py-2.5 text-sm font-semibold text-orange-700 shadow-sm transition hover:bg-orange-50"
+        >
+          <ArrowLeft size={18} />
+          Back
+        </Link>
+      </div>
 
+      {/* Header */}
       <div className="mb-8 flex items-start gap-4">
         <div className="rounded-2xl bg-orange-100 p-3">
           <PackageCheck className="h-8 w-8 text-orange-600" />

@@ -555,6 +555,9 @@ export default function ReceiptCard({
                 )
                 .join("");
 
+              const receiptLink =
+                `${window.location.origin}/admin/tshirts/receipt/${booking.booking_id}`;
+
               const message = `🛕 *Juliuswadi Cha Raja*
 
 🙏 Hello *${booking.donor_name}*,
@@ -572,6 +575,9 @@ Your T-Shirt booking has been confirmed successfully.
 📦 *Total Quantity*: ${totalQty}
 
 💰 *Amount Paid*: ₹${booking.total_amount}
+
+📄 *Receipt Link*
+${receiptLink}
 
 ⚠️ Please keep this receipt safe and show the QR code while collecting your T-Shirt.
 
