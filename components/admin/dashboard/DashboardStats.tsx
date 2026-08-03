@@ -20,6 +20,11 @@ export default function DashboardStats() {
     const res = await fetch("/api/donations");
 
     const data = await res.json();
+    console.log("STATS API:", data);
+    if (!Array.isArray(data)) {
+      console.error("Expected array but got:", data);
+      return;
+    }
 
     let cash = 0;
     let upi = 0;
@@ -31,7 +36,7 @@ export default function DashboardStats() {
 
       pending += Number(d.balance);
 
-      d.payments.forEach((p: any) => {
+      d.payments?.forEach((p: any) => {
         if (p.payment_mode === "Cash")
           cash += Number(p.amount);
 

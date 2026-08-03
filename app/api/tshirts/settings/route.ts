@@ -4,121 +4,136 @@ import { createClient } from "@supabase/supabase-js";
 export const dynamic = "force-dynamic";
 
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    throw new Error("Supabase environment variables are missing.");
+  }
+
+  return createClient(url, key);
 }
+
+async function getActiveYearId() {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from("booking_years")
+    .select("id")
+    .eq("is_active", true)
+    .single();
+
+  if (error || !data) {
+    throw new Error("Active booking year not found.");
+  }
+
+  return data.id;
+}
+
+/* =====================================================
+   GET SETTINGS
+===================================================== */
 
 export async function GET() {
   try {
     const supabase = getSupabase();
+    const yearId = await getActiveYearId();
 
-    // Get active booking year
-    const { data: year, error: yearError } = await supabase
-      .from("booking_years")
-      .select("id")
-      .eq("is_active", true)
-      .single();
-
-    if (yearError || !year) {
-      return NextResponse.json(
-        {
-          error: "Active booking year not found",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
-    // Get booking settings
-    const {
-      data,
-      error,
-    } = await supabase
+    const { data, error } = await supabase
       .from("booking_settings")
       .select("*")
-      .eq("year_id", year.id)
-      .limit(1)
+      .eq("year_id", yearId)
       .maybeSingle();
 
     if (error || !data) {
       return NextResponse.json(
         {
-          error: "Booking settings not found",
+          error:
+            error?.message || "Booking settings not found.",
         },
-        {
-          status: 500,
-        }
-      );
-    }
-
-    return NextResponse.json(data);
-  } catch (err) {
-    console.error(err);
-
-    return NextResponse.json(
-      {
-        error:
-          err instanceof Error
-            ? err.message
-            : "Unknown Error",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-}
-
-export async function PUT(request: Request) {
-  try {
-    const supabase = getSupabase();
-
-    const { booking_open } = await request.json();
-
-    if (typeof booking_open !== "boolean") {
-      return NextResponse.json(
-        { error: "Invalid booking status." },
-        { status: 400 }
-      );
-    }
-
-    const { data: year, error: yearError } = await supabase
-      .from("booking_years")
-      .select("id")
-      .eq("is_active", true)
-      .single();
-
-    if (yearError || !year) {
-      return NextResponse.json(
-        { error: "Active booking year not found." },
         { status: 500 }
       );
     }
 
-    /* -------------------------------------
-       Booking Open Check (Strict)
-    ------------------------------------- */
-    if (booking_open !== true) {
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown Error",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/* =====================================================
+   UPDATE SETTINGS
+===================================================== */
+
+export async function PUT(request: Request) {
+  try {
+    const supabase = getSupabase();
+    const yearId = await getActiveYearId();
+
+    const body = await request.json();
+
+    const updates: Record<string, unknown> = {};
+
+    if (typeof body.booking_open === "boolean") {
+      updates.booking_open = body.booking_open;
+    }
+
+    if (typeof body.upi_id === "string") {
+      updates.upi_id = body.upi_id.trim();
+    }
+
+    if (typeof body.gpay_number === "string") {
+      const number = body.gpay_number.replace(/\D/g, "");
+
+      if (
+        number.length > 0 &&
+        !/^[6-9]\d{9}$/.test(number)
+      ) {
+        return NextResponse.json(
+          {
+            error: "Enter a valid 10-digit GPay number.",
+          },
+          { status: 400 }
+        );
+      }
+
+      updates.gpay_number = number;
+    }
+
+    if (typeof body.upi_qr_url === "string") {
+      updates.upi_qr_url = body.upi_qr_url.trim();
+    }
+
+    if (
+      typeof body.public_payment_enabled === "boolean"
+    ) {
+      updates.public_payment_enabled =
+        body.public_payment_enabled;
+    }
+
+    if (Object.keys(updates).length === 0) {
       return NextResponse.json(
         {
-          error:
-            "T-Shirt booking is currently closed. Please contact the administrator.",
+          error: "No valid settings supplied.",
         },
-        {
-          status: 403,
-        }
+        { status: 400 }
       );
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("booking_settings")
-      .update({
-        booking_open,
-      })
-      .eq("year_id", year.id);
+      .update(updates)
+      .eq("year_id", yearId)
+      .select()
+      .single();
 
     if (error) {
       return NextResponse.json(
@@ -129,18 +144,17 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({
       success: true,
+      settings: data,
     });
-  } catch (err) {
+  } catch (error) {
     return NextResponse.json(
       {
         error:
-          err instanceof Error
-            ? err.message
+          error instanceof Error
+            ? error.message
             : "Unknown Error",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }
