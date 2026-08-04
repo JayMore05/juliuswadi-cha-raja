@@ -25,12 +25,32 @@ import {
 
 const PRICE = 330;
 
+const SIZES = [
+  { value: "26", label: "Child (26)" },
+  { value: "28", label: "Child (28)" },
+  { value: "30", label: "Child (30)" },
+  { value: "32", label: "Child (32)" },
+  { value: "XS", label: "XS (34)" },
+  { value: "S", label: "S (36)" },
+  { value: "M", label: "M (38)" },
+  { value: "L", label: "L (40)" },
+  { value: "XL", label: "XL (42)" },
+  { value: "XXL", label: "XXL (44)" },
+  { value: "XXXL", label: "XXXL (46)" },
+  { value: "CUSTOM", label: "Custom Size" },
+];
+
 export default function BookingForm() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [onlineRequestId, setOnlineRequestId] = useState<string | null>(null);
   const [customSizes, setCustomSizes] = useState<Record<number, string>>({});
+  const [onlinePayment, setOnlinePayment] = useState<{
+    preference: "pay_later" | "upi";
+    claimed: boolean;
+    reference: string | null;
+  } | null>(null);
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -87,6 +107,20 @@ export default function BookingForm() {
       setValue("phone", request.phone ?? "");
       setValue("remarks", request.remarks ?? "");
 
+      const preference =
+        request.payment_preference === "upi"
+          ? "upi"
+          : "pay_later";
+      setOnlinePayment({
+        preference,
+        claimed: request.payment_claimed === true,
+        reference: request.payment_reference ?? null,
+      });
+      setValue(
+        "payment_mode",
+        preference === "upi" ? "UPI" : "Cash"
+      );
+
       const requestItems = Array.isArray(request.items)
         ? request.items.map(
             (item: {
@@ -141,6 +175,33 @@ export default function BookingForm() {
 
   async function onSubmit(data: BookingFormValues) {
     try {
+      if (
+        onlineRequestId &&
+        onlinePayment?.preference === "upi"
+      ) {
+        if (!onlinePayment.claimed) {
+          toast.error(
+            "Customer has not marked the UPI payment as completed."
+          );
+          return;
+        }
+
+        if (!onlinePayment.reference) {
+          toast.error(
+            "UPI transaction / UTR number is missing."
+          );
+          return;
+        }
+
+        const confirmed = window.confirm(
+          `Have you verified UPI transaction ${onlinePayment.reference} and received the payment?`
+        );
+
+        if (!confirmed) {
+          return;
+        }
+      }
+
       setLoading(true);
 
       const finalItems = data.items.map((item, index) => {
@@ -262,6 +323,75 @@ export default function BookingForm() {
               </p>
             </div>
           </div>
+        </div>
+      )}
+
+      {onlineRequestId && onlinePayment && (
+        <div
+          className={`mb-6 rounded-2xl border p-5 ${
+            onlinePayment.preference === "upi"
+              ? "border-green-300 bg-green-50"
+              : "border-blue-300 bg-blue-50"
+          }`}
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-500">
+                PUBLIC REQUEST PAYMENT
+              </div>
+
+              <div className="mt-1 text-xl font-bold">
+                {onlinePayment.preference === "upi"
+                  ? "📱 UPI Payment"
+                  : "💵 Cash Payment"}
+              </div>
+            </div>
+
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-bold ${
+                onlinePayment.preference === "upi"
+                  ? "bg-green-200 text-green-800"
+                  : "bg-blue-200 text-blue-800"
+              }`}
+            >
+              {onlinePayment.preference === "upi"
+                ? "UPI"
+                : "CASH"}
+            </span>
+          </div>
+
+          {onlinePayment.preference === "upi" && (
+            <div className="mt-4 space-y-3">
+              <div className="rounded-xl bg-white p-4">
+                <div className="text-xs font-semibold uppercase text-gray-500">
+                  UTR / Transaction ID
+                </div>
+
+                <div className="mt-1 break-all font-mono text-lg font-bold">
+                  {onlinePayment.reference || "Not provided"}
+                </div>
+              </div>
+
+              {onlinePayment.claimed ? (
+                <div className="rounded-xl bg-yellow-100 p-4 text-sm font-semibold text-yellow-800">
+                  ⚠️ Customer claims this UPI payment is completed.
+                  Verify the UTR in your UPI/bank account before creating
+                  the official booking.
+                </div>
+              ) : (
+                <div className="rounded-xl bg-red-100 p-4 text-sm font-semibold text-red-700">
+                  ⚠️ Customer has not marked this payment as completed.
+                </div>
+              )}
+            </div>
+          )}
+
+          {onlinePayment.preference === "pay_later" && (
+            <div className="mt-4 rounded-xl bg-white p-4 text-sm text-blue-800">
+              Collect the payment in cash before confirming the official
+              booking.
+            </div>
+          )}
         </div>
       )}
 
@@ -480,18 +610,11 @@ export default function BookingForm() {
                       }}
                       className="w-full rounded-xl border p-3"
                     >
-                      <option value="26">Child (26)</option>
-                      <option value="28">Child (28)</option>
-                      <option value="30">Child (30)</option>
-                      <option value="32">Child (32)</option>
-                      <option value="XS">XS (34)</option>
-                      <option value="S">S (36)</option>
-                      <option value="M">M (38)</option>
-                      <option value="L">L (40)</option>
-                      <option value="XL">XL (42)</option>
-                      <option value="XXL">XXL (44)</option>
-                      <option value="XXXL">XXXL (46)</option>
-                      <option value="CUSTOM">Custom Size</option>
+                      {SIZES.map((size) => (
+                        <option key={size.value} value={size.value}>
+                          {size.label}
+                        </option>
+                      ))}
                     </select>
                     {items[index]?.tshirt_size === "CUSTOM" && (
                       <div className="mt-3">

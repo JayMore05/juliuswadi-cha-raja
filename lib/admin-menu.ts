@@ -6,6 +6,7 @@ import {
   Users,
   Settings,
   Shirt,
+  Globe2,
 } from "lucide-react";
 
 export const adminMenu = [
@@ -35,9 +36,14 @@ export const adminMenu = [
     icon: Users,
   },
   {
-    title: "👕 T-Shirt Management",
+    title: "T-Shirt Management",
     href: "/admin/tshirts",
     icon: Shirt,
+  },
+  {
+    title: "Online T-Shirt Requests",
+    href: "/admin/tshirts/online",
+    icon: Globe2,
   },
   {
     title: "Settings",

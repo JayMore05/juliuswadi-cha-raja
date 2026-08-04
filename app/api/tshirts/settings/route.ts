@@ -21,9 +21,13 @@ async function getActiveYearId() {
     .from("booking_years")
     .select("id")
     .eq("is_active", true)
-    .single();
+    .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data) {
     throw new Error("Active booking year not found.");
   }
 
@@ -31,7 +35,7 @@ async function getActiveYearId() {
 }
 
 /* =====================================================
-   GET SETTINGS
+   GET T-SHIRT SETTINGS
 ===================================================== */
 
 export async function GET() {
@@ -45,24 +49,30 @@ export async function GET() {
       .eq("year_id", yearId)
       .maybeSingle();
 
-    if (error || !data) {
+    if (error) {
       return NextResponse.json(
-        {
-          error:
-            error?.message || "Booking settings not found.",
-        },
+        { error: error.message },
         { status: 500 }
+      );
+    }
+
+    if (!data) {
+      return NextResponse.json(
+        { error: "Booking settings not found." },
+        { status: 404 }
       );
     }
 
     return NextResponse.json(data);
   } catch (error) {
+    console.error("T-Shirt Settings GET:", error);
+
     return NextResponse.json(
       {
         error:
           error instanceof Error
             ? error.message
-            : "Unknown Error",
+            : "Unknown error.",
       },
       { status: 500 }
     );
@@ -70,7 +80,7 @@ export async function GET() {
 }
 
 /* =====================================================
-   UPDATE SETTINGS
+   UPDATE T-SHIRT SETTINGS
 ===================================================== */
 
 export async function PUT(request: Request) {
@@ -98,9 +108,7 @@ export async function PUT(request: Request) {
         !/^[6-9]\d{9}$/.test(number)
       ) {
         return NextResponse.json(
-          {
-            error: "Enter a valid 10-digit GPay number.",
-          },
+          { error: "Enter a valid 10-digit GPay number." },
           { status: 400 }
         );
       }
@@ -112,18 +120,14 @@ export async function PUT(request: Request) {
       updates.upi_qr_url = body.upi_qr_url.trim();
     }
 
-    if (
-      typeof body.public_payment_enabled === "boolean"
-    ) {
+    if (typeof body.public_payment_enabled === "boolean") {
       updates.public_payment_enabled =
         body.public_payment_enabled;
     }
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json(
-        {
-          error: "No valid settings supplied.",
-        },
+        { error: "No valid settings supplied." },
         { status: 400 }
       );
     }
@@ -147,12 +151,14 @@ export async function PUT(request: Request) {
       settings: data,
     });
   } catch (error) {
+    console.error("T-Shirt Settings PUT:", error);
+
     return NextResponse.json(
       {
         error:
           error instanceof Error
             ? error.message
-            : "Unknown Error",
+            : "Unknown error.",
       },
       { status: 500 }
     );

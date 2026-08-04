@@ -4,34 +4,6 @@ import "./globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import StructuredData from "@/components/seo/StructuredData";
 
-import {
-  Inter,
-  Cormorant_Garamond,
-  Noto_Serif_Devanagari, Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const devanagari = Noto_Serif_Devanagari({
-  subsets: ["devanagari"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-devanagari",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL(
     "https://juliuswadi-cha-raja.vercel.app"
@@ -152,24 +124,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en">
       <body
-        className={`
-          ${inter.variable}
-          ${cormorant.variable}
-          ${devanagari.variable}
+        className="
           font-body
           bg-[#FFF8F2]
           text-slate-800
           antialiased
-        `}
+        "
       >
         <StructuredData />
 
         {children}
-      </body>
 
-      <GoogleAnalytics gaId="G-6VMC2M8XRX" />
+        <GoogleAnalytics gaId="G-6VMC2M8XRX" />
+      </body>
     </html>
   );
 }
